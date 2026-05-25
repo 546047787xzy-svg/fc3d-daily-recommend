@@ -1,17 +1,1 @@
-{
-  "period": "2026135",
-  "date": "2026-05-25",
-  "trial": "573",
-  "latest": {
-    "numbers": [6, 5, 4],
-    "type": "组六",
-    "sum": 15,
-    "span": 2
-  },
-  "recommendations": [
-    {"type": "直选", "numbers": [3, 7, 6], "desc": "独胆7 + 热码6 + 冷码反弹"},
-    {"type": "直选", "numbers": [4, 7, 9], "desc": "跨度预计回升"},
-    {"type": "组六", "numbers": [1, 5, 6, 7, 8, 9], "desc": "6码大底（专家共识）"}
-  ],
-  "analysis": "近10期热码0、6、7强势，冷码1、3、9出现概率上升。建议以热码为主，搭配冷码反弹。"
-}
+{"error": "HTTPConnectionPool(host='f.apiplus.net', port=80): Max retries exceeded with url: /fc3d.json (Caused by NameResolutionError(\"HTTPConnection(host='f.apiplus.net', port=80): Failed to resolve 'f.apiplus.net' ([Errno -5] No address associated with hostname)\"))"}
