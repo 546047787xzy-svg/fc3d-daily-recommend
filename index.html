@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>福彩3D · 每日智能推荐</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .number-ball { width: 46px; height: 46px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.25rem; background:linear-gradient(145deg,#c8102e,#a50d26); color:white; border-radius:9999px; box-shadow:0 4px 6px -1px rgb(200 16 46 / 0.4); }
+    </style>
+</head>
+<body class="bg-zinc-50">
+    <!-- 导航 -->
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-x-3">
+                <div class="w-11 h-11 bg-red-600 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-dice text-white text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">福彩3D</h1>
+                    <p class="text-xs text-zinc-500 -mt-1">每日智能推荐</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-x-3">
+                <div id="update-time" class="text-xs text-emerald-600 font-medium"></div>
+                <button onclick="location.reload()" class="px-4 py-2 text-sm border rounded-2xl hover:bg-zinc-100 flex items-center gap-x-2">
+                    <i class="fa-solid fa-sync"></i> <span>刷新</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        
+        <!-- 标题 -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-x-2 bg-white px-4 py-1.5 rounded-3xl shadow-sm border mb-3">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span id="current-period" class="font-medium text-sm">第2026135期 · 2026-05-25</span>
+            </div>
+            <h2 class="text-4xl font-bold tracking-tighter">今日智能推荐</h2>
+            <p class="text-zinc-500 mt-2">试机号后自动分析生成 · 多维度数据模型</p>
+        </div>
+
+        <!-- 最新开奖 -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm border mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-sm text-zinc-500">最新开奖</div>
+                    <div id="latest-draw" class="flex items-center gap-x-3 mt-2">
+                        <!-- JS动态填充 -->
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-zinc-500">试机号</div>
+                    <div id="trial-number" class="font-mono text-2xl font-bold text-red-600"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 今日推荐 -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4 px-1">
+                <h3 class="text-2xl font-semibold">今日推荐</h3>
+                <span class="text-xs px-3 py-1 bg-amber-100 text-amber-700 rounded-full">AI + 多维分析</span>
+            </div>
+
+            <div id="recommendations" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- JS动态生成推荐卡片 -->
+            </div>
+        </div>
+
+        <!-- 分析摘要 -->
+        <div class="bg-white rounded-3xl p-6 border mb-8">
+            <h4 class="font-semibold mb-4 flex items-center gap-x-2">
+                <i class="fa-solid fa-chart-line text-red-500"></i> 
+                数据分析摘要
+            </h4>
+            <div id="analysis-summary" class="text-sm text-zinc-600 leading-relaxed">
+                <!-- JS填充 -->
+            </div>
+        </div>
+
+        <div class="text-center text-xs text-zinc-400 mt-10">
+            自动更新时间：每天21:45 · 数据来源于公开接口 · 仅供娱乐
+        </div>
+    </div>
+
+    <script>
+        // 这里会由 GitHub Actions 自动替换内容
+        // 下面是示例数据（真实使用时会被脚本覆盖）
+        const latestData = {
+            period: "2026135",
+            date: "2026-05-25",
+            trial: "573",
+            latest: { numbers: [6,5,4], type: "组六", sum: 15, span: 2 },
+            recommendations: [
+                { type: "直选", numbers: [3,7,6], desc: "独胆7 + 热码6 + 冷码反弹" },
+                { type: "直选", numbers: [4,7,9], desc: "跨度预计回升" },
+                { type: "组六", numbers: [1,5,6,7,8,9], desc: "6码大底（专家共识）" }
+            ],
+            analysis: "近10期热码0、6、7强势，冷码1、3、9出现概率上升。建议以热码为主，搭配冷码反弹。"
+        };
+
+        // 渲染函数
+        function renderPage(data) {
+            document.getElementById('current-period').innerText = `第${data.period}期 · ${data.date}`;
+            document.getElementById('trial-number').innerText = data.trial;
+            
+            // 最新开奖
+            const drawEl = document.getElementById('latest-draw');
+            drawEl.innerHTML = `
+                <div class="flex gap-x-2">
+                    ${data.latest.numbers.map(n => `<div class="number-ball">${n}</div>`).join('')}
+                </div>
+                <div class="ml-3">
+                    <span class="font-semibold">${data.latest.type}</span><br>
+                    <span class="text-xs text-zinc-500">和值${data.latest.sum} · 跨度${data.latest.span}</span>
+                </div>
+            `;
+
+            // 推荐
+            const recContainer = document.getElementById('recommendations');
+            recContainer.innerHTML = data.recommendations.map(rec => `
+                <div class="bg-white border rounded-3xl p-5 hover:shadow-md transition">
+                    <div class="flex justify-between mb-3">
+                        <span class="text-xs px-2.5 py-1 rounded-full ${rec.type === '组六' ? 'bg-violet-100 text-violet-600' : 'bg-red-100 text-red-600'}">${rec.type}</span>
+                    </div>
+                    <div class="flex gap-x-2 mb-4">
+                        ${rec.numbers.map(n => `<div class="number-ball">${n}</div>`).join('')}
+                    </div>
+                    <div class="text-sm text-zinc-600">${rec.desc}</div>
+                </div>
+            `).join('');
+
+            // 分析
+            document.getElementById('analysis-summary').innerHTML = data.analysis;
+            
+            // 更新时间
+            document.getElementById('update-time').innerHTML = `最后更新：${new Date().toLocaleString('zh-CN')}`;
+        }
+
+        // 初始化
+        renderPage(latestData);
+    </script>
+</body>
+</html>
