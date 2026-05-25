@@ -1,8 +1,7 @@
 import requests
 import json
-from collections import Counter
 
-print("=== 聪明模式启动 ===")
+print("=== 自动更新启动 ===")
 
 try:
     res = requests.get("http://f.apiplus.net/fc3d.json", timeout=15)
@@ -10,7 +9,6 @@ try:
     latest = data['data'][0]
     numbers = [int(x) for x in latest['opencode'].split(',')]
 
-    # 简单智能推荐
     output = {
         "period": latest['expect'],
         "date": latest['opentime'][:10],
