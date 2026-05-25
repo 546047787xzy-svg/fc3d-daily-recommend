@@ -1,0 +1,1 @@
+{"error": "HTTPConnectionPool(host='f.apiplus.net', port=80): Max retries exceeded with url: /fc3d.json (Caused by NameResolutionError(\"HTTPConnection(host='f.apiplus.net', port=80): Failed to resolve 'f.apiplus.net' ([Errno -5] No address associated with hostname)\"))"}
