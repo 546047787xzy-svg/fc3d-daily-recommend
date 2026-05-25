@@ -2,7 +2,7 @@ name: Daily 3D Recommendation Update
 
 on:
   schedule:
-    - cron: '50 13 * * *'   # 北京时间 21:50 每天运行
+- cron: '30 0 * * *'    # 每天北京时间 08:30 更新（最优方案）
   workflow_dispatch:
 
 jobs:
