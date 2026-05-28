@@ -3,16 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="小许3D推荐 - 福彩3D每日智能分析、最新开奖、历史数据查询、专业推荐号码">
-    <meta name="keywords" content="福彩3D,3D预测,3D推荐,福彩3D今天推荐,3D历史开奖,小许3D">
-    <title>小许3D推荐 | 每日智能分析 · 最新开奖</title>
-    
-    <!-- SEO & 分享优化 -->
-    <meta property="og:title" content="小许3D推荐 - 今日最新智能推荐">
-    <meta property="og:description" content="福彩3D每日专业分析 + 历史开奖 + 一键复制推荐">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://fc3d-daily-recommend.546047787xzy.workers.dev">
-
+    <meta name="description" content="小许3D推荐 - 福彩3D每日智能分析、最新开奖、历史数据查询">
+    <title>小许3D推荐 | 每日智能分析</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -23,9 +15,8 @@
             font-weight:700; font-size:1.3rem; 
             background:linear-gradient(145deg,#c8102e,#a50d26); 
             color:white; border-radius:9999px; 
-            box-shadow:0 4px 6px -1px rgb(200 16 46 / 0.4); 
         }
-        .recommend-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+        .recommend-card:hover { transform: translateY(-4px); }
     </style>
 </head>
 <body class="bg-zinc-50">
@@ -43,10 +34,10 @@
             </div>
             <div class="flex items-center gap-x-3">
                 <button onclick="shareToWechat()" class="px-4 py-2 text-sm border rounded-2xl hover:bg-zinc-100 flex items-center gap-x-2">
-                    <i class="fa-solid fa-share-nodes"></i> <span>分享</span>
+                    <i class="fa-solid fa-share-nodes"></i>
                 </button>
                 <button onclick="location.reload()" class="px-4 py-2 text-sm border rounded-2xl hover:bg-zinc-100 flex items-center gap-x-2">
-                    <i class="fa-solid fa-sync"></i> <span>刷新</span>
+                    <i class="fa-solid fa-sync"></i>
                 </button>
             </div>
         </div>
@@ -133,24 +124,44 @@
         <!-- 数据分析 -->
         <div class="bg-white rounded-3xl p-6 border mb-8">
             <h4 class="font-semibold mb-4">数据分析摘要</h4>
-                    <!-- 历史开奖记录 -->
-        <div class="bg-white rounded-3xl p-6 border mt-8">
-            <h4 class="font-semibold mb-4 flex items-center gap-x-2">
-                <i class="fa-solid fa-history text-red-500"></i> 
-                近期开奖记录
-            </h4>
-            <div id="history-list" class="space-y-3 text-sm">
-                <!-- JS自动填充 -->
-            </div>
-            <div class="text-center text-xs text-zinc-400 mt-4">
-                数据每日自动更新 · 仅供参考
-            </div>
-        </div>
             <div class="text-sm text-zinc-600">
                 近10期热码1、6、8出现频繁，冷码3、7、9反弹概率较高。建议以热码为主，适当搭配冷码。
             </div>
         </div>
 
+        <!-- 历史开奖 -->
+        <div class="bg-white rounded-3xl p-6 border">
+            <h4 class="font-semibold mb-4 flex items-center gap-x-2">
+                <i class="fa-solid fa-history text-red-500"></i> 
+                近期开奖记录
+            </h4>
+            <div id="history-list" class="space-y-3 text-sm">
+                <!-- 自动填充 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- AI聊天按钮 -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button onclick="toggleChat()" class="w-14 h-14 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-xl flex items-center justify-center text-2xl">
+            <i class="fa-solid fa-comment-dots"></i>
+        </button>
+    </div>
+
+    <!-- AI聊天窗口 -->
+    <div id="chat-window" class="hidden fixed bottom-24 right-6 w-80 bg-white rounded-3xl shadow-2xl border overflow-hidden z-50">
+        <div class="bg-red-600 text-white p-4 flex justify-between">
+            <div class="font-medium">小许AI助手</div>
+            <button onclick="toggleChat()" class="text-xl">×</button>
+        </div>
+        <div id="chat-messages" class="h-80 p-4 overflow-y-auto bg-zinc-50 space-y-3 text-sm">
+            <div class="bg-zinc-100 p-3 rounded-2xl">你好！今天想怎么玩3D？</div>
+        </div>
+        <div class="p-3 border-t">
+            <input id="chat-input" type="text" placeholder="输入问题..." 
+                   class="w-full border rounded-2xl px-4 py-3 focus:outline-none"
+                   onkeypress="if(event.key==='Enter') sendMessage()">
+        </div>
     </div>
 
     <footer class="text-center py-8 text-xs text-zinc-400">
@@ -158,150 +169,60 @@
     </footer>
 
     <script>
-        function copyNumbers(numbers) {
-            const text = numbers.join('');
-            navigator.clipboard.writeText(text).then(() => {
-                alert('已复制：' + text + ' （快去试试手气！）');
-            });
-        }
-
-        function shareToWechat() {
-            const text = "小许3D推荐\n最新开奖：165\n今日推荐：168、379、135689\n\n快来看看今天怎么买 → https://fc3d-daily-recommend.546047787xzy.workers.dev";
-            navigator.clipboard.writeText(text).then(() => {
-                alert('分享内容已复制，快发给朋友吧！');
-            });
-        }
-    <script>
-        // 自动加载历史开奖记录
+        // 历史记录加载
         fetch('data.json')
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
-                const container = document.getElementById('history-list');
-                if (data.history && data.history.length > 0) {
-                    data.history.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = "flex justify-between items-center py-2 border-b last:border-none";
-                        div.innerHTML = `
-                            <span class="font-medium w-24">${item.period}期</span>
-                            <div class="flex gap-x-1.5">
-                                ${item.numbers.map(n => `<div class="number-ball text-sm w-7 h-7">${n}</div>`).join('')}
+                const list = document.getElementById('history-list');
+                if (data.history) {
+                    data.history.forEach(h => {
+                        const d = document.createElement('div');
+                        d.className = "flex justify-between items-center py-2 border-b last:border-0";
+                        d.innerHTML = `
+                            <span class="font-medium">${h.period}期</span>
+                            <div class="flex gap-x-1">
+                                ${h.numbers.map(n => `<div class="number-ball text-sm w-7 h-7">${n}</div>`).join('')}
                             </div>
-                            <span class="text-zinc-500 w-12 text-right">${item.type}</span>
+                            <span class="text-zinc-500">${h.type}</span>
                         `;
-                        container.appendChild(div);
+                        list.appendChild(d);
                     });
-                } else {
-                    container.innerHTML = '<p class="text-zinc-400 text-center py-4">历史数据加载中...</p>';
                 }
-            })
-            .catch(err => {
-                console.log("历史记录加载失败");
             });
 
-        function copyNumbers(numbers) {
-            const text = numbers.join('');
-            navigator.clipboard.writeText(text).then(() => {
-                alert('已复制：' + text);
+        // 复制号码
+        function copyNumbers(nums) {
+            navigator.clipboard.writeText(nums.join('')).then(() => {
+                alert('已复制：' + nums.join(''));
             });
         }
-    </script>let chatOpen = false;
 
-function toggleChat() {
-    const chatWindow = document.getElementById('chat-window');
-    chatWindow.classList.toggle('hidden');
-    chatOpen = !chatOpen;
-    
-    if (chatOpen) {
-        setTimeout(() => {
-            document.getElementById('chat-input').focus();
-        }, 300);
-    }
-}
-
-function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const message = input.value.trim();
-    if (!message) return;
-
-    const messages = document.getElementById('chat-messages');
-    
-    // 用户消息
-    messages.innerHTML += `
-        <div class="bg-red-600 text-white p-3 rounded-2xl max-w-[80%] ml-auto">
-            ${message}
-        </div>
-    `;
-    
-    input.value = '';
-    
-    // 模拟AI回复
-    setTimeout(() => {
-        let reply = "建议以热码为主，搭配1-2个冷码。今天可以重点关注4、7、8这几个号码。";
-        
-        if (message.includes("怎么买") || message.includes("推荐")) {
-            reply = "今天推荐直选 **168**、**379**，组六 **135689**。热码4、7、8比较强势。";
-        } else if (message.includes("今天") || message.includes("号码")) {
-            reply = "今日热码：4、7、8；冷码：1、3、9。建议小胆玩4、7。";
+        // 分享
+        function shareToWechat() {
+            const text = "小许3D推荐\n最新：165\n推荐：168 379 135689\n\n查看详情：https://fc3d-daily-recommend.546047787xzy.workers.dev";
+            navigator.clipboard.writeText(text).then(() => alert('分享内容已复制！'));
         }
-        
-        messages.innerHTML += `
-            <div class="bg-zinc-100 p-3 rounded-2xl max-w-[80%]">
-                ${reply}
-            </div>
-        `;
-        messages.scrollTop = messages.scrollHeight;
-    }, 800);
-    
-    messages.scrollTop = messages.scrollHeight;
-}
-let chatOpen = false;
 
-function toggleChat() {
-    const chatWindow = document.getElementById('chat-window');
-    chatWindow.classList.toggle('hidden');
-    chatOpen = !chatOpen;
-    
-    if (chatOpen) {
-        setTimeout(() => {
-            document.getElementById('chat-input').focus();
-        }, 300);
-    }
-}
-
-function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const message = input.value.trim();
-    if (!message) return;
-
-    const messages = document.getElementById('chat-messages');
-    
-    // 用户消息
-    messages.innerHTML += `
-        <div class="bg-red-600 text-white p-3 rounded-2xl max-w-[80%] ml-auto">
-            ${message}
-        </div>
-    `;
-    
-    input.value = '';
-    
-    // 模拟AI回复
-    setTimeout(() => {
-        let reply = "建议以热码为主，搭配1-2个冷码。今天可以重点关注4、7、8这几个号码。";
-        
-        if (message.includes("怎么买") || message.includes("推荐")) {
-            reply = "今天推荐直选 **168**、**379**，组六 **135689**。热码4、7、8比较强势。";
-        } else if (message.includes("今天") || message.includes("号码")) {
-            reply = "今日热码：4、7、8；冷码：1、3、9。建议小胆玩4、7。";
+        // AI聊天
+        function toggleChat() {
+            document.getElementById('chat-window').classList.toggle('hidden');
         }
-        
-        messages.innerHTML += `
-            <div class="bg-zinc-100 p-3 rounded-2xl max-w-[80%]">
-                ${reply}
-            </div>
-        `;
-        messages.scrollTop = messages.scrollHeight;
-    }, 800);
-    
-    messages.scrollTop = messages.scrollHeight;
-}</body>
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const messages = document.getElementById('chat-messages');
+            messages.innerHTML += `<div class="bg-red-600 text-white p-3 rounded-2xl ml-auto max-w-[75%]">${msg}</div>`;
+
+            input.value = '';
+
+            setTimeout(() => {
+                messages.innerHTML += `<div class="bg-zinc-100 p-3 rounded-2xl max-w-[75%]">建议关注热码1、6、8，搭配冷码3、7。今天可以小胆玩168或379。</div>`;
+                messages.scrollTop = messages.scrollHeight;
+            }, 700);
+        }
+    </script>
+</body>
 </html>
