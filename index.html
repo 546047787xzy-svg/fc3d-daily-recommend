@@ -123,27 +123,17 @@
 
     <footer class="text-center py-8 text-xs text-zinc-400">
         本站仅供娱乐参考，彩票有风险，购买需谨慎。
-    </footer>
-</body>
-</html>
-<div class="bg-white rounded-3xl p-6 border mt-8">
-    <h4 class="font-semibold mb-4 flex items-center gap-x-2">
-        <i class="fa-solid fa-history text-red-500"></i> 
-        近期开奖记录
-    </h4>
-    <div class="space-y-3 text-sm">
-        <div class="flex justify-between items-center py-2 border-b">
-            <span class="font-medium">2026135期</span>
-            <div class="flex gap-x-2">
-                <div class="number-ball text-sm w-8 h-8">4</div>
-                <div class="number-ball text-sm w-8 h-8">8</div>
-                <div class="number-ball text-sm w-8 h-8">7</div>
+                <!-- 历史开奖记录 -->
+        <div class="bg-white rounded-3xl p-6 border mt-8">
+            <h4 class="font-semibold mb-4 flex items-center gap-x-2">
+                <i class="fa-solid fa-history text-red-500"></i> 
+                近期开奖记录
+            </h4>
+            <div id="history-list" class="space-y-3 text-sm">
+                <!-- 这里会由JS自动填充 -->
             </div>
-            <span class="text-zinc-500">组六</span>
+            <div class="text-center text-xs text-zinc-400 mt-4">
+                数据自动更新 · 更多历史请关注官方
+            </div>
         </div>
-        <!-- 继续添加更多期 -->
-    </div>
-    <div class="text-center text-xs text-zinc-400 mt-4">
-        更多历史数据请关注官方渠道
-    </div>
-</div>
+    
