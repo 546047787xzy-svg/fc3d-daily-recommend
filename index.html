@@ -133,6 +133,19 @@
         <!-- 数据分析 -->
         <div class="bg-white rounded-3xl p-6 border mb-8">
             <h4 class="font-semibold mb-4">数据分析摘要</h4>
+                    <!-- 历史开奖记录 -->
+        <div class="bg-white rounded-3xl p-6 border mt-8">
+            <h4 class="font-semibold mb-4 flex items-center gap-x-2">
+                <i class="fa-solid fa-history text-red-500"></i> 
+                近期开奖记录
+            </h4>
+            <div id="history-list" class="space-y-3 text-sm">
+                <!-- JS自动填充 -->
+            </div>
+            <div class="text-center text-xs text-zinc-400 mt-4">
+                数据每日自动更新 · 仅供参考
+            </div>
+        </div>
             <div class="text-sm text-zinc-600">
                 近10期热码1、6、8出现频繁，冷码3、7、9反弹概率较高。建议以热码为主，适当搭配冷码。
             </div>
@@ -156,6 +169,39 @@
             const text = "小许3D推荐\n最新开奖：165\n今日推荐：168、379、135689\n\n快来看看今天怎么买 → https://fc3d-daily-recommend.546047787xzy.workers.dev";
             navigator.clipboard.writeText(text).then(() => {
                 alert('分享内容已复制，快发给朋友吧！');
+            });
+        }
+    <script>
+        // 自动加载历史开奖记录
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('history-list');
+                if (data.history && data.history.length > 0) {
+                    data.history.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = "flex justify-between items-center py-2 border-b last:border-none";
+                        div.innerHTML = `
+                            <span class="font-medium w-24">${item.period}期</span>
+                            <div class="flex gap-x-1.5">
+                                ${item.numbers.map(n => `<div class="number-ball text-sm w-7 h-7">${n}</div>`).join('')}
+                            </div>
+                            <span class="text-zinc-500 w-12 text-right">${item.type}</span>
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML = '<p class="text-zinc-400 text-center py-4">历史数据加载中...</p>';
+                }
+            })
+            .catch(err => {
+                console.log("历史记录加载失败");
+            });
+
+        function copyNumbers(numbers) {
+            const text = numbers.join('');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制：' + text);
             });
         }
     </script>
