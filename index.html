@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小许3D推荐</title>
+    <meta name="description" content="小许3D推荐 - 福彩3D每日智能分析、最新开奖、历史数据查询、专业推荐号码">
+    <meta name="keywords" content="福彩3D,3D预测,3D推荐,福彩3D今天推荐,3D历史开奖,小许3D">
+    <title>小许3D推荐 | 每日智能分析 · 最新开奖</title>
+    
+    <!-- SEO & 分享优化 -->
+    <meta property="og:title" content="小许3D推荐 - 今日最新智能推荐">
+    <meta property="og:description" content="福彩3D每日专业分析 + 历史开奖 + 一键复制推荐">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fc3d-daily-recommend.546047787xzy.workers.dev">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -16,6 +25,7 @@
             color:white; border-radius:9999px; 
             box-shadow:0 4px 6px -1px rgb(200 16 46 / 0.4); 
         }
+        .recommend-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
     </style>
 </head>
 <body class="bg-zinc-50">
@@ -31,7 +41,14 @@
                     <p class="text-xs text-zinc-500 -mt-1">每日智能分析</p>
                 </div>
             </div>
-            <div class="text-xs text-emerald-600 font-medium">最后更新：2026-05-26 11:40</div>
+            <div class="flex items-center gap-x-3">
+                <button onclick="shareToWechat()" class="px-4 py-2 text-sm border rounded-2xl hover:bg-zinc-100 flex items-center gap-x-2">
+                    <i class="fa-solid fa-share-nodes"></i> <span>分享</span>
+                </button>
+                <button onclick="location.reload()" class="px-4 py-2 text-sm border rounded-2xl hover:bg-zinc-100 flex items-center gap-x-2">
+                    <i class="fa-solid fa-sync"></i> <span>刷新</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -72,7 +89,7 @@
         <div class="mb-8">
             <h3 class="text-2xl font-semibold mb-4 px-1">今日智能推荐</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="bg-white border rounded-3xl p-5 hover:shadow-md transition-shadow">
+                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([1,6,8])">
                     <div class="flex justify-between mb-3">
                         <span class="text-xs px-2.5 py-1 rounded-full bg-red-100 text-red-600">直选</span>
                     </div>
@@ -84,7 +101,7 @@
                     <div class="text-sm text-zinc-600">热码延续推荐</div>
                 </div>
 
-                <div class="bg-white border rounded-3xl p-5 hover:shadow-md transition-shadow">
+                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([3,7,9])">
                     <div class="flex justify-between mb-3">
                         <span class="text-xs px-2.5 py-1 rounded-full bg-red-100 text-red-600">直选</span>
                     </div>
@@ -96,7 +113,7 @@
                     <div class="text-sm text-zinc-600">跨度回升趋势</div>
                 </div>
 
-                <div class="bg-white border rounded-3xl p-5 hover:shadow-md transition-shadow">
+                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([1,3,5,6,8,9])">
                     <div class="flex justify-between mb-3">
                         <span class="text-xs px-2.5 py-1 rounded-full bg-violet-100 text-violet-600">组六</span>
                     </div>
@@ -108,32 +125,39 @@
                         <div class="number-ball">8</div>
                         <div class="number-ball">9</div>
                     </div>
-                    <div class="text-sm text-zinc-600">综合热冷大底</div>
+                    <div class="text-sm text-zinc-600">综合热冷码大底</div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 border">
+        <!-- 数据分析 -->
+        <div class="bg-white rounded-3xl p-6 border mb-8">
             <h4 class="font-semibold mb-4">数据分析摘要</h4>
             <div class="text-sm text-zinc-600">
                 近10期热码1、6、8出现频繁，冷码3、7、9反弹概率较高。建议以热码为主，适当搭配冷码。
             </div>
         </div>
+
     </div>
 
     <footer class="text-center py-8 text-xs text-zinc-400">
         本站仅供娱乐参考，彩票有风险，购买需谨慎。
-                <!-- 历史开奖记录 -->
-        <div class="bg-white rounded-3xl p-6 border mt-8">
-            <h4 class="font-semibold mb-4 flex items-center gap-x-2">
-                <i class="fa-solid fa-history text-red-500"></i> 
-                近期开奖记录
-            </h4>
-            <div id="history-list" class="space-y-3 text-sm">
-                <!-- 这里会由JS自动填充 -->
-            </div>
-            <div class="text-center text-xs text-zinc-400 mt-4">
-                数据自动更新 · 更多历史请关注官方
-            </div>
-        </div>
-    
+    </footer>
+
+    <script>
+        function copyNumbers(numbers) {
+            const text = numbers.join('');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制：' + text + ' （快去试试手气！）');
+            });
+        }
+
+        function shareToWechat() {
+            const text = "小许3D推荐\n最新开奖：165\n今日推荐：168、379、135689\n\n快来看看今天怎么买 → https://fc3d-daily-recommend.546047787xzy.workers.dev";
+            navigator.clipboard.writeText(text).then(() => {
+                alert('分享内容已复制，快发给朋友吧！');
+            });
+        }
+    </script>
+</body>
+</html>
