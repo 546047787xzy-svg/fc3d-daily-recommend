@@ -17,7 +17,6 @@
             color:white; border-radius:9999px; 
             box-shadow:0 4px 6px -1px rgb(200 16 46 / 0.4); 
         }
-        .recommend-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
     </style>
 </head>
 <body class="bg-zinc-50">
@@ -33,14 +32,7 @@
                     <p class="text-xs text-zinc-500 -mt-1">每日智能分析</p>
                 </div>
             </div>
-            <div class="flex items-center gap-x-3">
-                <button onclick="shareToWechat()" class="px-4 py-2 text-sm border rounded-2xl hover:bg-zinc-100 flex items-center gap-x-2">
-                    <i class="fa-solid fa-share-nodes"></i>
-                </button>
-                <button onclick="location.reload()" class="px-4 py-2 text-sm border rounded-2xl hover:bg-zinc-100 flex items-center gap-x-2">
-                    <i class="fa-solid fa-sync"></i>
-                </button>
-            </div>
+            <div class="text-xs text-emerald-600 font-medium">最后更新：2026-05-26 12:10</div>
         </div>
     </nav>
 
@@ -60,13 +52,13 @@
                     <div class="text-sm text-zinc-500">最新开奖</div>
                     <div class="flex items-center gap-x-3 mt-2">
                         <div class="flex gap-x-2">
-                            <div class="number-ball">1</div>
-                            <div class="number-ball">6</div>
-                            <div class="number-ball">5</div>
+                            <div class="number-ball">7</div>
+                            <div class="number-ball">9</div>
+                            <div class="number-ball">0</div>
                         </div>
                         <div class="ml-3">
                             <span class="font-semibold">组六</span><br>
-                            <span class="text-xs text-zinc-500">和值12 · 跨度5</span>
+                            <span class="text-xs text-zinc-500">和值16 · 跨度9</span>
                         </div>
                     </div>
                 </div>
@@ -81,40 +73,40 @@
         <div class="mb-8">
             <h3 class="text-2xl font-semibold mb-4 px-1">今日智能推荐</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([1,6,8])">
+                <div class="bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([4,8,2])">
                     <div class="flex justify-between mb-3">
                         <span class="text-xs px-2.5 py-1 rounded-full bg-red-100 text-red-600">直选</span>
                     </div>
                     <div class="flex gap-x-2 mb-4">
-                        <div class="number-ball">1</div>
-                        <div class="number-ball">6</div>
+                        <div class="number-ball">4</div>
                         <div class="number-ball">8</div>
+                        <div class="number-ball">2</div>
                     </div>
-                    <div class="text-sm text-zinc-600">热码延续推荐</div>
+                    <div class="text-sm text-zinc-600">热码延续 + 冷码回调</div>
                 </div>
 
-                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([2,5,9])">
+                <div class="bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([3,7,9])">
                     <div class="flex justify-between mb-3">
                         <span class="text-xs px-2.5 py-1 rounded-full bg-red-100 text-red-600">直选</span>
                     </div>
                     <div class="flex gap-x-2 mb-4">
-                        <div class="number-ball">2</div>
-                        <div class="number-ball">5</div>
+                        <div class="number-ball">3</div>
+                        <div class="number-ball">7</div>
                         <div class="number-ball">9</div>
                     </div>
-                    <div class="text-sm text-zinc-600">跨度回升趋势</div>
+                    <div class="text-sm text-zinc-600">跨度回升趋势推荐</div>
                 </div>
 
-                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([1,3,5,6,8,9])">
+                <div class="bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([0,2,3,5,7,9])">
                     <div class="flex justify-between mb-3">
                         <span class="text-xs px-2.5 py-1 rounded-full bg-violet-100 text-violet-600">组六</span>
                     </div>
                     <div class="flex gap-x-2 mb-4">
-                        <div class="number-ball">1</div>
+                        <div class="number-ball">0</div>
+                        <div class="number-ball">2</div>
                         <div class="number-ball">3</div>
                         <div class="number-ball">5</div>
-                        <div class="number-ball">6</div>
-                        <div class="number-ball">8</div>
+                        <div class="number-ball">7</div>
                         <div class="number-ball">9</div>
                     </div>
                     <div class="text-sm text-zinc-600">综合热冷码大底</div>
@@ -122,11 +114,10 @@
             </div>
         </div>
 
-        <!-- 数据分析 -->
         <div class="bg-white rounded-3xl p-6 border">
             <h4 class="font-semibold mb-4">数据分析摘要</h4>
             <div class="text-sm text-zinc-600">
-                近10期热码1、6、8强势，冷码3、5、9反弹概率上升。建议以热码为主，搭配冷码，形态偏向组六。
+                最新开奖790（大号跨度大），下一期中小号回调概率较高。热码4、7、8仍有惯性，冷码2、3、5值得关注。
             </div>
         </div>
     </div>
@@ -137,9 +128,8 @@
 
     <script>
         function copyNumbers(numbers) {
-            const text = numbers.join('');
-            navigator.clipboard.writeText(text).then(() => {
-                alert('已复制：' + text);
+            navigator.clipboard.writeText(numbers.join('')).then(() => {
+                alert('已复制：' + numbers.join(''));
             });
         }
     </script>
