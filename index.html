@@ -15,8 +15,9 @@
             font-weight:700; font-size:1.3rem; 
             background:linear-gradient(145deg,#c8102e,#a50d26); 
             color:white; border-radius:9999px; 
+            box-shadow:0 4px 6px -1px rgb(200 16 46 / 0.4); 
         }
-        .recommend-card:hover { transform: translateY(-4px); }
+        .recommend-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
     </style>
 </head>
 <body class="bg-zinc-50">
@@ -92,13 +93,13 @@
                     <div class="text-sm text-zinc-600">热码延续推荐</div>
                 </div>
 
-                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([3,7,9])">
+                <div class="recommend-card bg-white border rounded-3xl p-5 cursor-pointer" onclick="copyNumbers([2,5,9])">
                     <div class="flex justify-between mb-3">
                         <span class="text-xs px-2.5 py-1 rounded-full bg-red-100 text-red-600">直选</span>
                     </div>
                     <div class="flex gap-x-2 mb-4">
-                        <div class="number-ball">3</div>
-                        <div class="number-ball">7</div>
+                        <div class="number-ball">2</div>
+                        <div class="number-ball">5</div>
                         <div class="number-ball">9</div>
                     </div>
                     <div class="text-sm text-zinc-600">跨度回升趋势</div>
@@ -122,45 +123,11 @@
         </div>
 
         <!-- 数据分析 -->
-        <div class="bg-white rounded-3xl p-6 border mb-8">
+        <div class="bg-white rounded-3xl p-6 border">
             <h4 class="font-semibold mb-4">数据分析摘要</h4>
             <div class="text-sm text-zinc-600">
-                近10期热码1、6、8出现频繁，冷码3、7、9反弹概率较高。建议以热码为主，适当搭配冷码。
+                近10期热码1、6、8强势，冷码3、5、9反弹概率上升。建议以热码为主，搭配冷码，形态偏向组六。
             </div>
-        </div>
-
-        <!-- 历史开奖 -->
-        <div class="bg-white rounded-3xl p-6 border">
-            <h4 class="font-semibold mb-4 flex items-center gap-x-2">
-                <i class="fa-solid fa-history text-red-500"></i> 
-                近期开奖记录
-            </h4>
-            <div id="history-list" class="space-y-3 text-sm">
-                <!-- 自动填充 -->
-            </div>
-        </div>
-    </div>
-
-    <!-- AI聊天按钮 -->
-    <div class="fixed bottom-6 right-6 z-50">
-        <button onclick="toggleChat()" class="w-14 h-14 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-xl flex items-center justify-center text-2xl">
-            <i class="fa-solid fa-comment-dots"></i>
-        </button>
-    </div>
-
-    <!-- AI聊天窗口 -->
-    <div id="chat-window" class="hidden fixed bottom-24 right-6 w-80 bg-white rounded-3xl shadow-2xl border overflow-hidden z-50">
-        <div class="bg-red-600 text-white p-4 flex justify-between">
-            <div class="font-medium">小许AI助手</div>
-            <button onclick="toggleChat()" class="text-xl">×</button>
-        </div>
-        <div id="chat-messages" class="h-80 p-4 overflow-y-auto bg-zinc-50 space-y-3 text-sm">
-            <div class="bg-zinc-100 p-3 rounded-2xl">你好！今天想怎么玩3D？</div>
-        </div>
-        <div class="p-3 border-t">
-            <input id="chat-input" type="text" placeholder="输入问题..." 
-                   class="w-full border rounded-2xl px-4 py-3 focus:outline-none"
-                   onkeypress="if(event.key==='Enter') sendMessage()">
         </div>
     </div>
 
@@ -169,59 +136,11 @@
     </footer>
 
     <script>
-        // 历史记录加载
-        fetch('data.json')
-            .then(r => r.json())
-            .then(data => {
-                const list = document.getElementById('history-list');
-                if (data.history) {
-                    data.history.forEach(h => {
-                        const d = document.createElement('div');
-                        d.className = "flex justify-between items-center py-2 border-b last:border-0";
-                        d.innerHTML = `
-                            <span class="font-medium">${h.period}期</span>
-                            <div class="flex gap-x-1">
-                                ${h.numbers.map(n => `<div class="number-ball text-sm w-7 h-7">${n}</div>`).join('')}
-                            </div>
-                            <span class="text-zinc-500">${h.type}</span>
-                        `;
-                        list.appendChild(d);
-                    });
-                }
+        function copyNumbers(numbers) {
+            const text = numbers.join('');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制：' + text);
             });
-
-        // 复制号码
-        function copyNumbers(nums) {
-            navigator.clipboard.writeText(nums.join('')).then(() => {
-                alert('已复制：' + nums.join(''));
-            });
-        }
-
-        // 分享
-        function shareToWechat() {
-            const text = "小许3D推荐\n最新：165\n推荐：168 379 135689\n\n查看详情：https://fc3d-daily-recommend.546047787xzy.workers.dev";
-            navigator.clipboard.writeText(text).then(() => alert('分享内容已复制！'));
-        }
-
-        // AI聊天
-        function toggleChat() {
-            document.getElementById('chat-window').classList.toggle('hidden');
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const msg = input.value.trim();
-            if (!msg) return;
-
-            const messages = document.getElementById('chat-messages');
-            messages.innerHTML += `<div class="bg-red-600 text-white p-3 rounded-2xl ml-auto max-w-[75%]">${msg}</div>`;
-
-            input.value = '';
-
-            setTimeout(() => {
-                messages.innerHTML += `<div class="bg-zinc-100 p-3 rounded-2xl max-w-[75%]">建议关注热码1、6、8，搭配冷码3、7。今天可以小胆玩168或379。</div>`;
-                messages.scrollTop = messages.scrollHeight;
-            }, 700);
         }
     </script>
 </body>
