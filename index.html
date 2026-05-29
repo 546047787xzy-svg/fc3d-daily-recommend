@@ -8,8 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; }
-        .number-ball { width: 48px; height: 48px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.3rem; background:linear-gradient(145deg,#c8102e,#a50d26); color:white; border-radius:9999px; box-shadow:0 4px 6px -1px rgb(200 16 46 / 0.4); }
-        .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 9999px; }
+        .number-ball { 
+            width: 48px; height: 48px; 
+            display:flex; align-items:center; justify-content:center; 
+            font-weight:700; font-size:1.3rem; 
+            background:linear-gradient(145deg,#c8102e,#a50d26); 
+            color:white; border-radius:9999px; 
+        }
     </style>
 </head>
 <body class="bg-zinc-50">
@@ -25,7 +30,6 @@
                     <p class="text-xs text-zinc-500 -mt-1">每日智能分析</p>
                 </div>
             </div>
-            <div class="text-xs text-emerald-600 font-medium">最后更新：2026-05-26</div>
         </div>
     </nav>
 
@@ -55,83 +59,66 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs text-zinc-500">试机号</div>
-                    <div class="font-mono text-2xl font-bold text-red-600">723</div>
-                </div>
             </div>
         </div>
 
-        <!-- 今日推荐 -->
-        <div class="mb-10">
-            <h3 class="text-2xl font-semibold mb-6 px-1">今日智能推荐</h3>
-            
-            <div class="space-y-8">
-                <!-- 独胆 -->
-                <div class="bg-white border rounded-3xl p-6">
-                    <div class="tag bg-red-100 text-red-600 mb-3">独胆</div>
-                    <div class="text-5xl font-bold text-red-600">7</div>
-                    <div class="text-sm text-zinc-500 mt-1">核心胆码 · 出现概率最高</div>
-                </div>
+        <!-- 推荐结构 -->
+        <div class="space-y-8">
+            <!-- 独胆 -->
+            <div class="bg-white border rounded-3xl p-6">
+                <div class="text-red-600 font-bold text-lg mb-2">★ 独胆</div>
+                <div class="text-6xl font-bold text-red-600">7</div>
+            </div>
 
-                <!-- 双胆 -->
-                <div class="bg-white border rounded-3xl p-6">
-                    <div class="tag bg-red-100 text-red-600 mb-3">双胆</div>
-                    <div class="flex gap-x-4">
-                        <div class="text-center">
-                            <div class="number-ball text-3xl">7</div>
-                            <div class="text-xs text-zinc-500 mt-1">主胆</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="number-ball text-3xl">9</div>
-                            <div class="text-xs text-zinc-500 mt-1">副胆</div>
-                        </div>
+            <!-- 双胆 -->
+            <div class="bg-white border rounded-3xl p-6">
+                <div class="text-red-600 font-bold text-lg mb-3">★ 双胆</div>
+                <div class="flex gap-8">
+                    <div class="text-center">
+                        <div class="number-ball text-4xl">7</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="number-ball text-4xl">9</div>
                     </div>
                 </div>
+            </div>
 
-                <!-- 5码 -->
-                <div class="bg-white border rounded-3xl p-6">
-                    <div class="tag bg-amber-100 text-amber-700 mb-3">5码参考</div>
-                    <div class="flex gap-x-3 flex-wrap">
-                        <div class="number-ball">1</div>
-                        <div class="number-ball">3</div>
-                        <div class="number-ball">4</div>
-                        <div class="number-ball">7</div>
-                        <div class="number-ball">9</div>
-                    </div>
+            <!-- 5码 -->
+            <div class="bg-white border rounded-3xl p-6">
+                <div class="text-amber-600 font-bold text-lg mb-3">5码参考</div>
+                <div class="flex gap-3 flex-wrap">
+                    <div class="number-ball">1</div>
+                    <div class="number-ball">3</div>
+                    <div class="number-ball">4</div>
+                    <div class="number-ball">7</div>
+                    <div class="number-ball">9</div>
                 </div>
+            </div>
 
-                <!-- 大底 -->
-                <div class="bg-white border rounded-3xl p-6">
-                    <div class="tag bg-violet-100 text-violet-600 mb-3">大底（8注）</div>
-                    <div class="grid grid-cols-2 gap-3 text-sm">
-                        <div>135679</div>
-                        <div>13789</div>
-                        <div>24689</div>
-                        <div>03479</div>
-                        <div>12578</div>
-                        <div>36789</div>
-                        <div>01468</div>
-                        <div>23579</div>
-                    </div>
+            <!-- 多码推荐（原大底） -->
+            <div class="bg-white border rounded-3xl p-6">
+                <div class="text-violet-600 font-bold text-lg mb-3">多码推荐（8注）</div>
+                <div class="grid grid-cols-2 gap-y-3 text-lg font-mono">
+                    <div>168</div><div>379</div><div>479</div><div>178</div>
+                    <div>289</div><div>458</div><div>679</div><div>139</div>
                 </div>
+            </div>
 
-                <!-- 重点 -->
-                <div class="bg-white border rounded-3xl p-6">
-                    <div class="tag bg-red-100 text-red-600 mb-3">重点推荐（3注）</div>
-                    <div class="space-y-4">
-                        <div class="flex gap-x-4 items-center">
-                            <span class="font-medium w-20">重点1：</span>
-                            <span class="font-mono text-lg">168</span>
-                        </div>
-                        <div class="flex gap-x-4 items-center">
-                            <span class="font-medium w-20">重点2：</span>
-                            <span class="font-mono text-lg">379</span>
-                        </div>
-                        <div class="flex gap-x-4 items-center">
-                            <span class="font-medium w-20">重点3：</span>
-                            <span class="font-mono text-lg">479</span>
-                        </div>
+            <!-- 重点推荐 -->
+            <div class="bg-white border rounded-3xl p-6">
+                <div class="text-red-600 font-bold text-lg mb-3">重点推荐（3注）</div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <span class="font-bold text-red-600 w-20">重点1：</span>
+                        <span class="font-mono text-2xl">168</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="font-bold text-red-600 w-20">重点2：</span>
+                        <span class="font-mono text-2xl">379</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="font-bold text-red-600 w-20">重点3：</span>
+                        <span class="font-mono text-2xl">479</span>
                     </div>
                 </div>
             </div>
