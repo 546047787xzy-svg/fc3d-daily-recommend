@@ -1,32 +1,38 @@
-name: Daily 3D Recommendation Update
+name: 每日自动更新福彩3D数据
 
 on:
   schedule:
-  - cron: '30 0 * * *'    # 每天北京时间 08:30 更新（最优方案）
-  workflow_dispatch:
+    # 北京时间 10:00 = UTC 02:00
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    permissions:
+      contents: write
 
-      - name: Set up Python
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 设置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: 安装依赖
         run: pip install requests
 
-      - name: Run update script
+      - name: 运行更新脚本
         run: python update.py
 
-      - name: Commit and push
+      - name: 提交并推送 data.json
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git commit -m "Auto update data: $(date '+%Y-%m-%d %H:%M')" || exit 0
+          git diff --staged --quiet || git commit -m "🎲 自动更新: $(date +'%Y-%m-%d %H:%M') CST"
           git push
