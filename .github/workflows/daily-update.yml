@@ -2,21 +2,17 @@ name: 每日自动更新福彩3D数据
 
 on:
   schedule:
-    # 北京时间 10:00 = UTC 02:00
     - cron: '0 2 * * *'
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 设置 Python
         uses: actions/setup-python@v5
@@ -27,9 +23,12 @@ jobs:
         run: pip install requests
 
       - name: 运行更新脚本
+        env:
+          MXNZP_APP_ID: ${{ secrets.MXNZP_APP_ID }}
+          MXNZP_APP_SECRET: ${{ secrets.MXNZP_APP_SECRET }}
         run: python update.py
 
-      - name: 提交并推送 data.json
+      - name: 提交并推送
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
