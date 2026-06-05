@@ -1,269 +1,328 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>小许3D推荐 | 每日智能分析</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-body { font-family: system-ui, -apple-system, sans-serif; }
-.number-ball {
-  width: 48px; height: 48px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1.3rem;
-  background: linear-gradient(145deg, #c8102e, #a50d26);
-  color: white; border-radius: 9999px;
-}
-.number-ball-sm {
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1rem;
-  background: linear-gradient(145deg, #c8102e, #a50d26);
-  color: white; border-radius: 9999px;
-}
-.number-ball-lg {
-  width: 64px; height: 64px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 1.8rem;
-  background: linear-gradient(145deg, #c8102e, #a50d26);
-  color: white; border-radius: 9999px;
-}
-.miss-bar {
-  height: 6px; border-radius: 3px;
-  background: linear-gradient(to right, #22c55e, #f59e0b, #ef4444);
-}
-</style>
-</head>
-<body class="bg-zinc-50">
-
-<!-- 导航栏 -->
-<nav class="bg-white border-b sticky top-0 z-50">
-  <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-    <div class="flex items-center gap-x-3">
-      <div class="w-11 h-11 bg-red-600 rounded-2xl flex items-center justify-center">
-        <i class="fa-solid fa-dice text-white text-3xl"></i>
-      </div>
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">小许3D推荐</h1>
-        <p class="text-xs text-zinc-500 -mt-1">每日智能分析</p>
-      </div>
-    </div>
-    <div id="update-time" class="text-xs text-zinc-400"></div>
-  </div>
-</nav>
-
-<div class="max-w-5xl mx-auto px-4 py-8" id="main-content">
-  <!-- 加载中占位 -->
-  <div id="loading" class="text-center py-20 text-zinc-400">
-    <i class="fa-solid fa-spinner fa-spin text-4xl mb-4"></i>
-    <p>数据加载中...</p>
-  </div>
-</div>
-
-<footer class="text-center py-8 text-xs text-zinc-400">
-  本站仅供娱乐参考，彩票有风险，购买需谨慎。
-</footer>
-
-<script>
-async function loadData() {
-  try {
-    const res = await fetch('data.json?t=' + Date.now());
-    const d = await res.json();
-
-    if (d.error || d.update_failed) {
-      document.getElementById('loading').innerHTML =
-        '<p class="text-red-500">⚠️ 数据暂时无法获取，请稍后刷新</p>';
-      return;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小许3D推荐 | 每日智能分析</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --red: #c8102e;
+      --ink: #18181b;
+      --muted: #71717a;
+      --line: #e4e4e7;
     }
 
-    render(d);
-  } catch (e) {
-    document.getElementById('loading').innerHTML =
-      '<p class="text-red-500">⚠️ 加载失败，请检查网络后刷新</p>';
-  }
-}
+    * { box-sizing: border-box; }
 
-function ball(n, size = '') {
-  const cls = size === 'lg' ? 'number-ball-lg' : size === 'sm' ? 'number-ball-sm' : 'number-ball';
-  return `<div class="${cls}">${n}</div>`;
-}
+    body {
+      margin: 0;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(200, 16, 46, .08), rgba(255, 255, 255, 0) 280px),
+        #f6f7f9;
+    }
 
-function render(d) {
-  const { period, date, update_time, latest, history, analysis, recommendations: rec } = d;
+    .app-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-  // 更新时间
-  document.getElementById('update-time').textContent = `更新于 ${update_time}`;
+    .ball {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--size, 44px);
+      height: var(--size, 44px);
+      flex: 0 0 var(--size, 44px);
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 800;
+      font-size: var(--font, 1.15rem);
+      line-height: 1;
+      background: radial-gradient(circle at 30% 24%, #ff8a99 0, #f13751 28%, #c8102e 62%, #8f1026 100%);
+      box-shadow: inset 0 -5px 10px rgba(80, 0, 15, .25), 0 8px 18px rgba(200, 16, 46, .18);
+    }
 
-  // 遗漏条
-  const missMax = Math.max(...Object.values(analysis.miss));
-  const missBars = Array.from({length: 10}, (_, i) => {
-    const m = analysis.miss[i] || 0;
-    const pct = missMax > 0 ? Math.round(m / missMax * 100) : 0;
-    const color = m >= 5 ? 'text-red-500 font-bold' : m >= 3 ? 'text-amber-500' : 'text-zinc-500';
-    return `
-      <div class="flex items-center gap-2">
-        <span class="w-4 text-center font-mono text-sm font-semibold">${i}</span>
-        <div class="flex-1 bg-zinc-100 rounded-full h-2">
-          <div class="miss-bar h-2 rounded-full" style="width:${Math.max(pct,4)}%"></div>
-        </div>
-        <span class="w-6 text-right text-xs ${color}">${m}</span>
-      </div>`;
-  }).join('');
+    .ball.sm { --size: 32px; --font: .92rem; }
+    .ball.lg { --size: 72px; --font: 2rem; }
+    .ball.cold {
+      background: radial-gradient(circle at 30% 24%, #cbd5e1 0, #64748b 48%, #334155 100%);
+      box-shadow: inset 0 -5px 10px rgba(15, 23, 42, .25), 0 8px 18px rgba(51, 65, 85, .16);
+    }
 
-  // 012路
-  const roadHtml = Object.entries(analysis.road_ratio).map(([k, v]) => `
-    <div class="text-center">
-      <div class="text-lg font-bold">${v}%</div>
-      <div class="text-xs text-zinc-500">${k}</div>
-    </div>`).join('');
+    .panel {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 16px 34px rgba(24, 24, 27, .06);
+    }
 
-  // 历史记录
-  const historyHtml = history.slice(1).map(h => `
-    <tr class="border-b last:border-0">
-      <td class="py-2 px-3 text-xs text-zinc-400">${h.period}</td>
-      <td class="py-2 px-3">
-        <div class="flex gap-1">
-          ${h.numbers.map(n => ball(n, 'sm')).join('')}
-        </div>
-      </td>
-      <td class="py-2 px-3 text-xs">${h.type}</td>
-      <td class="py-2 px-3 text-xs text-zinc-500">和${h.sum} 跨${h.span}</td>
-    </tr>`).join('');
+    .metric {
+      min-height: 126px;
+    }
 
-  // 重点推荐
-  const combosHtml = (rec.combos || []).map(c => `
-    <div class="flex items-center gap-4">
-      <span class="font-bold text-red-600 w-16 text-sm">${c.label}：</span>
-      <div class="flex gap-2">${c.numbers.map(n => ball(n, 'sm')).join('')}</div>
-    </div>`).join('');
+    .progress {
+      height: 8px;
+      border-radius: 999px;
+      background: #eef2f7;
+      overflow: hidden;
+    }
 
-  const html = `
-    <!-- 期号标题 -->
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center gap-x-2 bg-white px-4 py-1.5 rounded-3xl shadow-sm border mb-3">
-        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-        <span class="font-medium text-sm">第${period}期 · ${date}</span>
-      </div>
-      <h2 class="text-4xl font-bold tracking-tighter">今日推荐</h2>
-    </div>
+    .progress > span {
+      display: block;
+      height: 100%;
+      min-width: 4%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+    }
 
-    <!-- 最新开奖 -->
-    <div class="bg-white rounded-3xl p-6 shadow-sm border mb-6">
-      <div class="text-sm text-zinc-500 mb-3">最新开奖（第${period}期）</div>
-      <div class="flex items-center gap-x-4">
-        <div class="flex gap-x-2">
-          ${latest.numbers.map(n => ball(n)).join('')}
-        </div>
-        <div>
-          <span class="font-semibold text-lg">${latest.type}</span><br>
-          <span class="text-xs text-zinc-500">和值${latest.sum} · 跨度${latest.span}</span>
-        </div>
-      </div>
-    </div>
+    .table-wrap {
+      overflow-x: auto;
+    }
 
-    <!-- 推荐区 -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-
-      <!-- 独胆 -->
-      <div class="bg-white border rounded-3xl p-6 flex flex-col items-center justify-center text-center">
-        <div class="text-red-600 font-bold text-sm mb-3">★ 独胆</div>
-        ${ball(rec.dan1, 'lg')}
-      </div>
-
-      <!-- 双胆 -->
-      <div class="bg-white border rounded-3xl p-6 flex flex-col items-center justify-center text-center">
-        <div class="text-red-600 font-bold text-sm mb-3">★ 双胆</div>
-        <div class="flex gap-3 justify-center">
-          ${rec.dan2.map(n => ball(n)).join('')}
-        </div>
-      </div>
-
-      <!-- 三胆 -->
-      <div class="bg-white border rounded-3xl p-6 flex flex-col items-center justify-center text-center">
-        <div class="text-red-600 font-bold text-sm mb-3">★ 三胆</div>
-        <div class="flex gap-3 justify-center">
-          ${rec.dan3.map(n => ball(n)).join('')}
-        </div>
-      </div>
-    </div>
-
-    <!-- 5码参考 -->
-    <div class="bg-white border rounded-3xl p-6 mb-6">
-      <div class="text-amber-600 font-bold mb-3">5码参考</div>
-      <div class="flex gap-3 flex-wrap">
-        ${rec.code5.map(n => ball(n)).join('')}
-      </div>
-    </div>
-
-    <!-- 重点推荐 -->
-    <div class="bg-white border rounded-3xl p-6 mb-6">
-      <div class="text-red-600 font-bold mb-4">重点推荐（${rec.combos.length}注）</div>
-      <div class="space-y-4">${combosHtml}</div>
-    </div>
-
-    <!-- 综合分析 -->
-    <div class="bg-white border rounded-3xl p-6 mb-6">
-      <div class="font-bold mb-4 flex items-center gap-2">
-        <i class="fa-solid fa-chart-line text-blue-500"></i> 综合分析
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <!-- 热冷码 -->
-        <div>
-          <div class="text-sm font-semibold text-zinc-600 mb-2">热码（近30期高频）</div>
-          <div class="flex gap-2 flex-wrap mb-4">
-            ${analysis.hot.map(n => `<div class="number-ball-sm bg-gradient-to-br from-red-500 to-red-700">${n}</div>`).join('')}
+    @media (max-width: 640px) {
+      .app-shell { padding: 14px; }
+      .ball { --size: 38px; --font: 1rem; }
+      .ball.lg { --size: 58px; --font: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="sticky top-0 z-40 border-b border-zinc-200 bg-white/88 backdrop-blur">
+    <div class="app-shell py-3">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-red-700 text-white">
+            <i class="fa-solid fa-dice-three text-2xl"></i>
           </div>
-          <div class="text-sm font-semibold text-zinc-600 mb-2">冷码（近30期低频）</div>
-          <div class="flex gap-2 flex-wrap">
-            ${analysis.cold.map(n => `<div class="number-ball-sm" style="background:linear-gradient(145deg,#64748b,#475569)">${n}</div>`).join('')}
+          <div>
+            <h1 class="text-xl font-black tracking-normal sm:text-2xl">小许3D推荐</h1>
+            <p class="text-xs text-zinc-500">每日自动抓取 · 趋势分析 · 回测参考</p>
           </div>
         </div>
+        <div id="update-time" class="hidden text-right text-xs text-zinc-500 sm:block"></div>
+      </div>
+    </div>
+  </header>
 
-        <!-- 012路 -->
-        <div>
-          <div class="text-sm font-semibold text-zinc-600 mb-2">012路分布（近10期）</div>
-          <div class="flex justify-around bg-zinc-50 rounded-2xl p-4">${roadHtml}</div>
-          <div class="text-xs text-zinc-400 mt-2 text-center">和值参考：${analysis.sum_range}</div>
+  <main class="app-shell" id="main-content">
+    <div id="loading" class="panel mt-6 flex min-h-64 flex-col items-center justify-center p-8 text-zinc-500">
+      <i class="fa-solid fa-spinner fa-spin mb-4 text-3xl text-red-700"></i>
+      <p class="font-medium">正在加载今日数据...</p>
+    </div>
+  </main>
+
+  <footer class="app-shell pb-8 pt-2 text-center text-xs text-zinc-400">
+    本站内容仅供娱乐和数据学习参考，彩票有风险，购买需谨慎。
+  </footer>
+
+  <script>
+    const numberBall = (n, size = "", tone = "") =>
+      `<span class="ball ${size} ${tone}" aria-label="号码 ${n}">${n}</span>`;
+
+    const pct = value => `${Number(value || 0).toFixed(1).replace(".0", "")}%`;
+
+    async function loadData() {
+      try {
+        const response = await fetch(`data.json?t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        render(data);
+      } catch (error) {
+        document.getElementById("loading").innerHTML = `
+          <i class="fa-solid fa-circle-exclamation mb-4 text-3xl text-red-600"></i>
+          <p class="font-semibold text-red-600">数据加载失败</p>
+          <p class="mt-2 text-sm text-zinc-500">请稍后刷新页面，或检查 data.json 是否已生成。</p>
+        `;
+      }
+    }
+
+    function render(data) {
+      const { period, date, update_time, latest, history = [], analysis, recommendations: rec, backtest } = data;
+      const updateTime = data.update_failed
+        ? `上次更新失败：${data.failed_time || update_time || "-"}`
+        : `更新于 ${update_time || "-"}`;
+      document.getElementById("update-time").textContent = updateTime;
+
+      const missValues = Object.values(analysis.miss || {}).map(Number);
+      const missMax = Math.max(...missValues, 1);
+      const missRows = Array.from({ length: 10 }, (_, i) => {
+        const miss = Number(analysis.miss?.[i] ?? analysis.miss?.[String(i)] ?? 0);
+        const width = Math.round((miss / missMax) * 100);
+        const tone = miss >= 5 ? "text-red-600 font-bold" : miss >= 3 ? "text-amber-600 font-semibold" : "text-zinc-500";
+        return `
+          <div class="grid grid-cols-[24px_1fr_34px] items-center gap-2">
+            <span class="text-center font-mono text-sm font-bold">${i}</span>
+            <div class="progress"><span style="width:${width}%"></span></div>
+            <span class="text-right text-xs ${tone}">${miss}</span>
+          </div>
+        `;
+      }).join("");
+
+      const roadHtml = Object.entries(analysis.road_ratio || {}).map(([label, value]) => `
+        <div class="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-center">
+          <div class="text-xl font-black">${value}%</div>
+          <div class="mt-1 text-xs text-zinc-500">${label}</div>
         </div>
-      </div>
+      `).join("");
 
-      <!-- 遗漏分析 -->
-      <div class="mt-6">
-        <div class="text-sm font-semibold text-zinc-600 mb-3">遗漏期数（0–9）</div>
-        <div class="space-y-1.5">${missBars}</div>
-        <div class="text-xs text-zinc-400 mt-2">红色数字 = 高遗漏，建议重点关注</div>
-      </div>
+      const combosHtml = (rec.combos || []).map(combo => `
+        <div class="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-white px-4 py-3">
+          <span class="text-sm font-bold text-red-700">${combo.label}</span>
+          <div class="flex gap-2">${combo.numbers.map(n => numberBall(n, "sm")).join("")}</div>
+        </div>
+      `).join("");
 
-      <!-- 分析文字 -->
-      <div class="mt-5 bg-blue-50 border border-blue-100 rounded-2xl p-4 text-sm text-blue-800 leading-relaxed">
-        ${analysis.text}
-      </div>
-    </div>
+      const historyHtml = history.map(item => `
+        <tr class="border-b border-zinc-100 last:border-0">
+          <td class="whitespace-nowrap px-4 py-3 text-xs text-zinc-500">${item.period}</td>
+          <td class="px-4 py-3">
+            <div class="flex gap-1.5">${item.numbers.map(n => numberBall(n, "sm")).join("")}</div>
+          </td>
+          <td class="whitespace-nowrap px-4 py-3 text-sm font-semibold">${item.type}</td>
+          <td class="whitespace-nowrap px-4 py-3 text-sm text-zinc-500">和值 ${item.sum} · 跨度 ${item.span}</td>
+        </tr>
+      `).join("");
 
-    <!-- 历史记录 -->
-    <div class="bg-white border rounded-3xl overflow-hidden mb-6">
-      <div class="px-6 py-4 border-b font-bold">近期开奖记录</div>
-      <table class="w-full">
-        <thead class="bg-zinc-50 text-xs text-zinc-500">
-          <tr>
-            <th class="text-left py-2 px-3">期号</th>
-            <th class="text-left py-2 px-3">号码</th>
-            <th class="text-left py-2 px-3">类型</th>
-            <th class="text-left py-2 px-3">和值/跨度</th>
-          </tr>
-        </thead>
-        <tbody>${historyHtml}</tbody>
-      </table>
-    </div>
-  `;
+      const summary = backtest?.summary || {};
+      const backtestCards = [
+        ["独胆", summary.dan1],
+        ["双胆", summary.dan2],
+        ["三胆", summary.dan3],
+        ["五码", summary.code5],
+      ].map(([label, item]) => `
+        <div class="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+          <div class="text-xs text-zinc-500">${label}命中率</div>
+          <div class="mt-1 text-2xl font-black">${pct(item?.rate)}</div>
+          <div class="mt-1 text-xs text-zinc-400">命中 ${item?.hit || 0} / ${summary.total || 0}</div>
+        </div>
+      `).join("");
 
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('main-content').insertAdjacentHTML('beforeend', html);
-}
+      const failedBanner = data.update_failed ? `
+        <div class="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+          今日自动抓取失败，页面正在展示上次成功更新的数据。
+        </div>
+      ` : "";
 
-loadData();
-</script>
+      document.getElementById("loading").remove();
+      document.getElementById("main-content").innerHTML = `
+        <section class="py-6">
+          ${failedBanner}
+          <div class="grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+            <div class="panel p-6">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div class="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-sm font-semibold text-red-700">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                    第 ${period} 期 · ${date}
+                  </div>
+                  <h2 class="mt-4 text-3xl font-black tracking-normal sm:text-4xl">今日推荐</h2>
+                  <p class="mt-2 text-sm text-zinc-500">${updateTime}</p>
+                </div>
+                <div class="text-left sm:text-right">
+                  <div class="text-xs text-zinc-500">最新开奖</div>
+                  <div class="mt-2 flex gap-2">${latest.numbers.map(n => numberBall(n)).join("")}</div>
+                  <div class="mt-2 text-sm font-semibold">${latest.type} · 和值 ${latest.sum} · 跨度 ${latest.span}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel p-6">
+              <div class="mb-4 flex items-center gap-2 font-bold">
+                <i class="fa-solid fa-bullseye text-red-700"></i>
+                重点组合
+              </div>
+              <div class="space-y-3">${combosHtml}</div>
+            </div>
+          </div>
+
+          <div class="mt-5 grid gap-5 md:grid-cols-3">
+            <div class="panel metric flex flex-col items-center justify-center p-5 text-center">
+              <div class="mb-3 text-sm font-bold text-red-700">独胆</div>
+              ${numberBall(rec.dan1, "lg")}
+            </div>
+            <div class="panel metric flex flex-col items-center justify-center p-5 text-center">
+              <div class="mb-3 text-sm font-bold text-red-700">双胆</div>
+              <div class="flex gap-3">${rec.dan2.map(n => numberBall(n)).join("")}</div>
+            </div>
+            <div class="panel metric flex flex-col items-center justify-center p-5 text-center">
+              <div class="mb-3 text-sm font-bold text-red-700">三胆</div>
+              <div class="flex gap-3">${rec.dan3.map(n => numberBall(n)).join("")}</div>
+            </div>
+          </div>
+
+          <div class="mt-5 grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
+            <div class="panel p-6">
+              <div class="mb-4 flex items-center gap-2 font-bold">
+                <i class="fa-solid fa-list-ol text-amber-600"></i>
+                五码参考
+              </div>
+              <div class="flex flex-wrap gap-3">${rec.code5.map(n => numberBall(n)).join("")}</div>
+              <p class="mt-4 text-sm leading-7 text-zinc-600">${analysis.text}</p>
+            </div>
+
+            <div class="panel p-6">
+              <div class="mb-4 flex items-center gap-2 font-bold">
+                <i class="fa-solid fa-chart-line text-sky-600"></i>
+                趋势分析
+              </div>
+              <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                  <div class="mb-2 text-sm font-semibold text-zinc-600">热码</div>
+                  <div class="mb-5 flex flex-wrap gap-2">${analysis.hot.map(n => numberBall(n, "sm")).join("")}</div>
+                  <div class="mb-2 text-sm font-semibold text-zinc-600">冷码</div>
+                  <div class="flex flex-wrap gap-2">${analysis.cold.map(n => numberBall(n, "sm", "cold")).join("")}</div>
+                </div>
+                <div>
+                  <div class="mb-2 text-sm font-semibold text-zinc-600">012路分布</div>
+                  <div class="grid grid-cols-3 gap-2">${roadHtml}</div>
+                  <div class="mt-3 text-xs text-zinc-500">和值参考：${analysis.sum_range}</div>
+                </div>
+              </div>
+              <div class="mt-6">
+                <div class="mb-3 text-sm font-semibold text-zinc-600">遗漏期数</div>
+                <div class="space-y-2">${missRows}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 grid gap-5 lg:grid-cols-[.9fr_1.1fr]">
+            <div class="panel p-6">
+              <div class="mb-4 flex items-center gap-2 font-bold">
+                <i class="fa-solid fa-gauge-high text-emerald-600"></i>
+                回测表现
+              </div>
+              <div class="grid grid-cols-2 gap-3">${backtestCards}</div>
+            </div>
+
+            <div class="panel overflow-hidden">
+              <div class="border-b border-zinc-200 px-6 py-4 font-bold">近期开奖记录</div>
+              <div class="table-wrap">
+                <table class="w-full min-w-[560px]">
+                  <thead class="bg-zinc-50 text-xs text-zinc-500">
+                    <tr>
+                      <th class="px-4 py-3 text-left">期号</th>
+                      <th class="px-4 py-3 text-left">号码</th>
+                      <th class="px-4 py-3 text-left">类型</th>
+                      <th class="px-4 py-3 text-left">和值 / 跨度</th>
+                    </tr>
+                  </thead>
+                  <tbody>${historyHtml}</tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    loadData();
+  </script>
 </body>
 </html>
