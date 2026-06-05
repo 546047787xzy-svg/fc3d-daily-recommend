@@ -1,38 +1,43 @@
-name: 每日自动更新福彩3D数据
+name: Daily FC3D data update
 
 on:
   schedule:
-    # 北京时间 22:00 = UTC 14:00（开奖后抓取）
-    - cron: '0 14 * * *'
+    - cron: "10 14 * * *"
   workflow_dispatch:
+
+concurrency:
+  group: daily-fc3d-update
+  cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - name: 检出代码
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 设置 Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: 安装依赖
-        run: pip install requests
-
-      - name: 运行更新脚本
+      - name: Run updater
         env:
           MXNZP_APP_ID: ${{ secrets.MXNZP_APP_ID }}
           MXNZP_APP_SECRET: ${{ secrets.MXNZP_APP_SECRET }}
         run: python update.py
 
-      - name: 提交并推送
+      - name: Commit updated data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --staged --quiet || git commit -m "🎲 自动更新: $(date +'%Y-%m-%d %H:%M') CST"
-          git push
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "Update FC3D data: $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')"
+            git push
+          fi
