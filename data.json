@@ -1,19 +1,31 @@
 {
-  "period": "2026145",
-  "date": "2026-06-04",
-  "update_time": "2026-06-05 13:15",
+  "period": "2026146",
+  "date": "2026-06-05",
+  "update_time": "2026-06-05 22:26",
   "update_failed": false,
   "latest": {
     "numbers": [
-      2,
-      7,
-      9
+      4,
+      6,
+      4
     ],
-    "type": "组六",
-    "sum": 18,
-    "span": 7
+    "type": "组三",
+    "sum": 14,
+    "span": 2
   },
   "history": [
+    {
+      "period": "2026146",
+      "date": "2026-06-05",
+      "numbers": [
+        4,
+        6,
+        4
+      ],
+      "type": "组三",
+      "sum": 14,
+      "span": 2
+    },
     {
       "period": "2026145",
       "date": "2026-06-04",
@@ -121,31 +133,19 @@
       "type": "组六",
       "sum": 12,
       "span": 5
-    },
-    {
-      "period": "2026136",
-      "date": "2026-05-26",
-      "numbers": [
-        8,
-        8,
-        9
-      ],
-      "type": "组三",
-      "sum": 25,
-      "span": 1
     }
   ],
   "analysis": {
     "hot": [
       7,
-      2,
-      0,
       6,
+      4,
+      2,
       8
     ],
     "cold": [
+      9,
       3,
-      4,
       5,
       1
     ],
@@ -168,14 +168,14 @@
       4,
       8
     ],
-    "avg_sum": 17.3,
+    "avg_sum": 16.2,
     "sum_range": "中和值（10-18）",
     "road_ratio": {
       "0路": 40,
-      "1路": 23,
-      "2路": 37
+      "1路": 30,
+      "2路": 30
     },
-    "text": "近30期热码为 [7, 2, 0, 6]，冷码为 [3, 4, 5]。高遗漏号码：[1, 0, 5]。近10期和值均值 17.3，建议关注中和值（10-18）。012路近期分布：0路40%、1路23%、2路37%，1路偏少，可适当补充[1, 4, 7]。近期偶码偏多，建议搭配奇码。"
+    "text": "近30期热码为 [7, 6, 4, 2]，冷码为 [9, 3, 5]。高遗漏号码：[1, 0, 5]。近10期和值均值 16.2，建议关注中和值（10-18）。012路近期分布：0路40%、1路30%、2路30%，1路偏少，可适当补充[1, 4, 7]。近期偶码偏多，建议搭配奇码。"
   },
   "recommendations": {
     "dan1": 1,
@@ -219,6 +219,633 @@
           1,
           2
         ]
+      }
+    ]
+  },
+  "backtest": {
+    "summary": {
+      "total": 20,
+      "dan1": {
+        "hit": 3,
+        "rate": 15.0,
+        "random_rate": 30.0
+      },
+      "dan2": {
+        "hit": 5,
+        "rate": 25.0,
+        "random_rate": 51.2
+      },
+      "dan3": {
+        "hit": 12,
+        "rate": 60.0,
+        "random_rate": 65.7
+      },
+      "code5": {
+        "hit": 2,
+        "rate": 10.0,
+        "random_rate": 8.3
+      }
+    },
+    "details": [
+      {
+        "period": "2026146",
+        "date": "2026-06-05",
+        "actual": [
+          4,
+          6,
+          4
+        ],
+        "dan1": 1,
+        "dan2": [
+          1,
+          7
+        ],
+        "dan3": [
+          0,
+          2,
+          7
+        ],
+        "code5": [
+          0,
+          1,
+          2,
+          5,
+          7
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": false,
+        "code5_hit": false
+      },
+      {
+        "period": "2026145",
+        "date": "2026-06-04",
+        "actual": [
+          2,
+          7,
+          9
+        ],
+        "dan1": 1,
+        "dan2": [
+          1,
+          7
+        ],
+        "dan3": [
+          0,
+          7,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          5,
+          7,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": true,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026144",
+        "date": "2026-06-03",
+        "actual": [
+          7,
+          2,
+          6
+        ],
+        "dan1": 1,
+        "dan2": [
+          1,
+          8
+        ],
+        "dan3": [
+          0,
+          7,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          2,
+          7,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026143",
+        "date": "2026-06-02",
+        "actual": [
+          3,
+          7,
+          6
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          4,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          4,
+          6,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": false,
+        "code5_hit": false
+      },
+      {
+        "period": "2026142",
+        "date": "2026-06-01",
+        "actual": [
+          8,
+          9,
+          4
+        ],
+        "dan1": 4,
+        "dan2": [
+          0,
+          4
+        ],
+        "dan3": [
+          0,
+          6,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          4,
+          6,
+          8
+        ],
+        "dan1_hit": true,
+        "dan2_hit": true,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026141",
+        "date": "2026-05-31",
+        "actual": [
+          3,
+          9,
+          7
+        ],
+        "dan1": 3,
+        "dan2": [
+          0,
+          3
+        ],
+        "dan3": [
+          0,
+          6,
+          8
+        ],
+        "code5": [
+          0,
+          3,
+          4,
+          6,
+          8
+        ],
+        "dan1_hit": true,
+        "dan2_hit": true,
+        "dan3_hit": false,
+        "code5_hit": false
+      },
+      {
+        "period": "2026140",
+        "date": "2026-05-30",
+        "actual": [
+          2,
+          8,
+          5
+        ],
+        "dan1": 3,
+        "dan2": [
+          0,
+          3
+        ],
+        "dan3": [
+          0,
+          6,
+          8
+        ],
+        "code5": [
+          0,
+          3,
+          4,
+          6,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026139",
+        "date": "2026-05-29",
+        "actual": [
+          2,
+          8,
+          6
+        ],
+        "dan1": 3,
+        "dan2": [
+          0,
+          3
+        ],
+        "dan3": [
+          0,
+          6,
+          8
+        ],
+        "code5": [
+          0,
+          2,
+          3,
+          6,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": true
+      },
+      {
+        "period": "2026138",
+        "date": "2026-05-28",
+        "actual": [
+          7,
+          9,
+          0
+        ],
+        "dan1": 3,
+        "dan2": [
+          0,
+          3
+        ],
+        "dan3": [
+          0,
+          6,
+          8
+        ],
+        "code5": [
+          0,
+          2,
+          3,
+          6,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": true,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026137",
+        "date": "2026-05-27",
+        "actual": [
+          1,
+          6,
+          5
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          7,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          3,
+          7,
+          8
+        ],
+        "dan1_hit": true,
+        "dan2_hit": true,
+        "dan3_hit": false,
+        "code5_hit": false
+      },
+      {
+        "period": "2026136",
+        "date": "2026-05-26",
+        "actual": [
+          8,
+          8,
+          9
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          7,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          3,
+          7,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026135",
+        "date": "2026-05-25",
+        "actual": [
+          4,
+          8,
+          7
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          6,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          3,
+          6,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026134",
+        "date": "2026-05-24",
+        "actual": [
+          6,
+          5,
+          4
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          6,
+          8
+        ],
+        "code5": [
+          0,
+          1,
+          4,
+          6,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026133",
+        "date": "2026-05-23",
+        "actual": [
+          0,
+          8,
+          0
+        ],
+        "dan1": 1,
+        "dan2": [
+          1,
+          6
+        ],
+        "dan3": [
+          0,
+          2,
+          6
+        ],
+        "code5": [
+          0,
+          1,
+          2,
+          4,
+          6
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026132",
+        "date": "2026-05-22",
+        "actual": [
+          7,
+          5,
+          6
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          2,
+          6
+        ],
+        "code5": [
+          0,
+          1,
+          2,
+          4,
+          6
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": false
+      },
+      {
+        "period": "2026131",
+        "date": "2026-05-21",
+        "actual": [
+          5,
+          9,
+          8
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          2,
+          6
+        ],
+        "code5": [
+          0,
+          1,
+          2,
+          5,
+          6
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": false,
+        "code5_hit": false
+      },
+      {
+        "period": "2026130",
+        "date": "2026-05-20",
+        "actual": [
+          2,
+          6,
+          7
+        ],
+        "dan1": 1,
+        "dan2": [
+          0,
+          1
+        ],
+        "dan3": [
+          0,
+          1,
+          4
+        ],
+        "code5": [
+          0,
+          1,
+          4,
+          5,
+          9
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": false,
+        "code5_hit": false
+      },
+      {
+        "period": "2026129",
+        "date": "2026-05-19",
+        "actual": [
+          0,
+          2,
+          3
+        ],
+        "dan1": 1,
+        "dan2": [
+          1,
+          4
+        ],
+        "dan3": [
+          0,
+          1,
+          4
+        ],
+        "code5": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": true,
+        "code5_hit": true
+      },
+      {
+        "period": "2026128",
+        "date": "2026-05-18",
+        "actual": [
+          7,
+          7,
+          6
+        ],
+        "dan1": 1,
+        "dan2": [
+          1,
+          4
+        ],
+        "dan3": [
+          0,
+          1,
+          4
+        ],
+        "code5": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": false,
+        "code5_hit": false
+      },
+      {
+        "period": "2026127",
+        "date": "2026-05-17",
+        "actual": [
+          7,
+          0,
+          0
+        ],
+        "dan1": 1,
+        "dan2": [
+          1,
+          8
+        ],
+        "dan3": [
+          1,
+          4,
+          8
+        ],
+        "code5": [
+          1,
+          3,
+          4,
+          7,
+          8
+        ],
+        "dan1_hit": false,
+        "dan2_hit": false,
+        "dan3_hit": false,
+        "code5_hit": false
       }
     ]
   }
