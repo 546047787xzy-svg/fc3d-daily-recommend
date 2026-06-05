@@ -2,7 +2,8 @@ name: 每日自动更新福彩3D数据
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    # 北京时间 22:00 = UTC 14:00（开奖后抓取）
+    - cron: '0 14 * * *'
   workflow_dispatch:
 
 jobs:
