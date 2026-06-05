@@ -60,7 +60,7 @@ def get_json(url, params):
     return json.loads(body)
 
 
-def fetch_from_mxnzp(size=100):
+def fetch_from_mxnzp(size=50):
     app_id = os.environ.get("MXNZP_APP_ID", "").strip()
     app_secret = os.environ.get("MXNZP_APP_SECRET", "").strip()
     if not app_id or not app_secret:
@@ -86,36 +86,8 @@ def fetch_from_mxnzp(size=100):
     return records
 
 
-def fetch_from_cwl(size=100):
-    url = "http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice"
-    params = {
-        "name": "3d",
-        "issueCount": "",
-        "issueStart": "",
-        "issueEnd": "",
-        "dayStart": "",
-        "dayEnd": "",
-        "pageNo": 1,
-        "pageSize": size,
-        "week": "",
-        "systemType": "PC",
-    }
-    payload = get_json(url, params)
-
-    records = []
-    for item in payload.get("result", []):
-        expect = item.get("code") or item.get("issue")
-        open_code = item.get("red") or item.get("number")
-        open_time = item.get("date") or item.get("openTime")
-        record = normalize_record(expect, open_code, open_time)
-        if record:
-            records.append(record)
-    return records
-
-
-def fetch_history(size=100):
+def fetch_history(size=50):
     sources = (
-        ("cwl.gov.cn", fetch_from_cwl),
         ("mxnzp.com", fetch_from_mxnzp),
     )
     for name, fetcher in sources:
@@ -215,7 +187,7 @@ def analyze(records):
 def build_backtest(records):
     details = []
     total = h1 = h2 = h3 = h5 = 0
-    max_bt = min(len(records) - 30, 70)
+    max_bt = min(len(records) - 30, 20)
     for i in range(max_bt):
         target = records[i]
         history = records[i + 1 : i + 31]
@@ -260,7 +232,7 @@ def build_backtest(records):
             "dan3": {"hit": h3, "rate": pct(h3), "random_rate": 65.7},
             "code5": {"hit": h5, "rate": pct(h5), "random_rate": 8.3},
         },
-        "details": details[:50],
+        "details": details[:20],
     }
 
 
@@ -372,7 +344,7 @@ def main():
     log("=== 福彩3D 自动更新启动 ===")
     log(f"当前北京时间: {now.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    records = fetch_history(100)
+    records = fetch_history(50)
     if not records:
         log("All data sources failed. Keeping previous data.")
         mark_update_failed(now)
