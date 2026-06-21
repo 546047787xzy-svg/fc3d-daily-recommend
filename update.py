@@ -56,8 +56,7 @@ def get_text(url, params):
 
 
 def get_json(url, params):
-    body = get_text(url, params)
-    return json.loads(body)
+    return json.loads(get_text(url, params))
 
 
 def fetch_from_mxnzp(size=50):
@@ -67,14 +66,15 @@ def fetch_from_mxnzp(size=50):
         log("MXNZP secrets are not configured, skipping MXNZP.")
         return []
 
-    url = "https://www.mxnzp.com/api/lottery/common/history"
-    params = {
-        "code": "fc3d",
-        "size": size,
-        "app_id": app_id,
-        "app_secret": app_secret,
-    }
-    payload = get_json(url, params)
+    payload = get_json(
+        "https://www.mxnzp.com/api/lottery/common/history",
+        {
+            "code": "fc3d",
+            "size": size,
+            "app_id": app_id,
+            "app_secret": app_secret,
+        },
+    )
     if payload.get("code") != 1:
         raise RuntimeError(payload.get("msg") or "MXNZP returned an error")
 
@@ -116,10 +116,10 @@ def parse_nums(item):
 
 
 def draw_type(nums):
-    unique_count = len(set(nums))
-    if unique_count == 1:
+    kinds = len(set(nums))
+    if kinds == 1:
         return "豹子"
-    if unique_count == 2:
+    if kinds == 2:
         return "组三"
     return "组六"
 
@@ -134,15 +134,21 @@ def stable_unique(values, limit):
     return result
 
 
+def recent_numbers(records, count):
+    return [parse_nums(item) for item in records[:count]]
+
+
 def digit_metrics(records):
+    recs_30 = recent_numbers(records, 30)
+    recs_15 = recent_numbers(records, 15)
+    recs_10 = recent_numbers(records, 10)
+    recs_5 = recent_numbers(records, 5)
+
     count_30 = Counter()
     count_15 = Counter()
     count_10 = Counter()
+    count_5 = Counter()
     miss = {digit: 0 for digit in range(10)}
-
-    recs_30 = [parse_nums(item) for item in records[:30]]
-    recs_15 = [parse_nums(item) for item in records[:15]]
-    recs_10 = [parse_nums(item) for item in records[:10]]
 
     for rec in recs_30:
         count_30.update(rec)
@@ -150,6 +156,8 @@ def digit_metrics(records):
         count_15.update(rec)
     for rec in recs_10:
         count_10.update(rec)
+    for rec in recs_5:
+        count_5.update(rec)
 
     for digit in range(10):
         for rec in recs_30:
@@ -159,14 +167,18 @@ def digit_metrics(records):
 
     scores = {}
     for digit in range(10):
-        scores[digit] = (
+        base = (
             count_30[digit] * 1.0
-            + count_15[digit] * 0.8
-            + count_10[digit] * 0.6
-            + min(miss[digit], 4) * 0.35
+            + count_15[digit] * 0.9
+            + count_10[digit] * 0.8
+            + count_5[digit] * 0.55
         )
+        miss_bonus = min(miss[digit], 6) * 0.22
+        overheat_penalty = 0.5 if count_5[digit] >= 3 else 0
+        scores[digit] = round(base + miss_bonus - overheat_penalty, 4)
 
-    hot = [digit for digit, _ in sorted(scores.items(), key=lambda x: (-x[1], x[0]))[:5]]
+    ranked = [digit for digit, _ in sorted(scores.items(), key=lambda x: (-x[1], x[0]))]
+    hot = ranked[:5]
     cold = [digit for digit, _ in sorted(scores.items(), key=lambda x: (x[1], x[0]))[:4]]
     high_miss = [digit for digit, _ in sorted(miss.items(), key=lambda x: (-x[1], x[0])) if miss[digit] >= 4][:5]
 
@@ -174,8 +186,10 @@ def digit_metrics(records):
         "count_30": count_30,
         "count_15": count_15,
         "count_10": count_10,
+        "count_5": count_5,
         "miss": miss,
         "scores": scores,
+        "ranked": ranked,
         "hot": hot,
         "cold": cold,
         "high_miss": high_miss,
@@ -183,16 +197,19 @@ def digit_metrics(records):
 
 
 def calc_window_features(records):
-    recent10 = [parse_nums(item) for item in records[:10]]
+    recent10 = recent_numbers(records, 10)
     sums = [sum(nums) for nums in recent10]
-    avg_sum = round(sum(sums) / len(sums), 1) if sums else 0
+    spans = [max(nums) - min(nums) for nums in recent10]
 
-    if avg_sum < 10:
-        sum_range = "中大和值（10-18）"
-        target_sum_min, target_sum_max = 10, 18
-    elif avg_sum > 18:
-        sum_range = "中小和值（8-16）"
-        target_sum_min, target_sum_max = 8, 16
+    avg_sum = round(sum(sums) / len(sums), 1) if sums else 0
+    avg_span = round(sum(spans) / len(spans), 1) if spans else 0
+
+    if avg_sum <= 11:
+        sum_range = "低中和值（8-14）"
+        target_sum_min, target_sum_max = 8, 14
+    elif avg_sum >= 18:
+        sum_range = "中高和值（14-22）"
+        target_sum_min, target_sum_max = 14, 22
     else:
         sum_range = "中和值（10-18）"
         target_sum_min, target_sum_max = 10, 18
@@ -208,9 +225,12 @@ def calc_window_features(records):
 
     odd_count = sum(1 for nums in recent10 for n in nums if n % 2 == 1)
     prefer_even = odd_count > 15
+    recent_draw_types = [draw_type(nums) for nums in recent10]
+    type_count = Counter(recent_draw_types)
 
     return {
         "avg_sum": avg_sum,
+        "avg_span": avg_span,
         "sum_range": sum_range,
         "target_sum_min": target_sum_min,
         "target_sum_max": target_sum_max,
@@ -218,63 +238,59 @@ def calc_window_features(records):
         "weak_road": weak_road,
         "road_digits": road_digits,
         "prefer_even": prefer_even,
+        "type_count": type_count,
     }
 
 
 def score_combo(combo, metrics, features):
-    s = sum(combo)
-    span = max(combo) - min(combo)
-    unique_count = len(set(combo))
+    combo_sum = sum(combo)
+    combo_span = max(combo) - min(combo)
     odd_count = sum(1 for n in combo if n % 2 == 1)
+    unique_count = len(set(combo))
     weak_road_hits = sum(1 for n in combo if n % 3 == features["weak_road"])
-
+    miss_hits = sum(1 for n in combo if metrics["miss"][n] >= 4)
     score = sum(metrics["scores"][n] for n in combo)
-    score += min(weak_road_hits, 2) * 0.45
-    score += 0.35 if features["target_sum_min"] <= s <= features["target_sum_max"] else -0.8
-    score += 0.2 if 2 <= span <= 7 else -0.35
-    score += 0.15 if unique_count >= 2 else -0.6
+
+    if features["target_sum_min"] <= combo_sum <= features["target_sum_max"]:
+        score += 0.7
+    else:
+        score -= 0.8
+
+    if 2 <= combo_span <= 7:
+        score += 0.35
+    else:
+        score -= 0.2
+
+    if unique_count == 3:
+        score += 0.45
+    elif unique_count == 2:
+        score += 0.25
+    else:
+        score -= 1.2
 
     if features["prefer_even"]:
-        score += 0.2 if odd_count <= 1 else -0.2
+        score += 0.25 if odd_count <= 1 else -0.25
     else:
-        score += 0.2 if odd_count >= 2 else -0.2
+        score += 0.25 if odd_count >= 2 else -0.25
 
-    if combo[0] == combo[1] == combo[2]:
-        score -= 1.5
+    score += min(weak_road_hits, 2) * 0.22
+    score += min(miss_hits, 1) * 0.15
 
     return round(score, 4)
 
 
 def select_display_combos(top_combos, limit=3):
     picked = []
-    used_signatures = set()
-
+    signatures = set()
     for item in top_combos:
         combo = item["numbers"]
-        unique_count = len(set(combo))
-        if unique_count == 1:
-            continue
-
         signature = tuple(sorted(set(combo)))
-        if signature in used_signatures:
+        if signature in signatures:
             continue
-
         picked.append(item)
-        used_signatures.add(signature)
+        signatures.add(signature)
         if len(picked) >= limit:
             break
-
-    if len(picked) < limit:
-        for item in top_combos:
-            combo = item["numbers"]
-            if len(set(combo)) == 1:
-                continue
-            if item in picked:
-                continue
-            picked.append(item)
-            if len(picked) >= limit:
-                break
-
     return picked[:limit]
 
 
@@ -282,35 +298,37 @@ def analyze(records):
     metrics = digit_metrics(records)
     features = calc_window_features(records)
 
-    ranked_digits = [digit for digit, _ in sorted(metrics["scores"].items(), key=lambda x: (-x[1], x[0]))]
     hot = metrics["hot"]
     cold = metrics["cold"]
-    miss = metrics["miss"]
     high_miss = metrics["high_miss"]
+    miss = metrics["miss"]
+    ranked = metrics["ranked"]
+
+    core_pool = stable_unique(
+        hot[:5]
+        + ranked[:7]
+        + features["road_digits"][features["weak_road"]][:2]
+        + high_miss[:2],
+        8,
+    )
+    core_pool = sorted(core_pool)
 
     dan1 = hot[0]
-    dan2 = sorted(stable_unique(hot[:3] + high_miss[:1], 2))
-    dan3 = sorted(stable_unique(hot[:4] + features["road_digits"][features["weak_road"]][:1], 3))
-    code5 = sorted(stable_unique(hot[:5] + high_miss[:2], 5))
-
-    candidate_pool = stable_unique(
-        hot[:5] + ranked_digits[:6] + features["road_digits"][features["weak_road"]][:2] + high_miss[:2],
-        7,
-    )
-    candidate_pool = sorted(candidate_pool)
+    dan2 = sorted(stable_unique(hot[:3] + ranked[3:5], 2))
+    dan3 = sorted(stable_unique(hot[:4] + high_miss[:1] + features["road_digits"][features["weak_road"]][:1], 3))
+    code5 = sorted(stable_unique(hot[:5] + ranked[5:7] + high_miss[:1], 5))
 
     combos = []
-    for i in range(len(candidate_pool)):
-        for j in range(i, len(candidate_pool)):
-            for k in range(j, len(candidate_pool)):
-                combo = [candidate_pool[i], candidate_pool[j], candidate_pool[k]]
+    for i in range(len(core_pool)):
+        for j in range(i, len(core_pool)):
+            for k in range(j, len(core_pool)):
+                combo = [core_pool[i], core_pool[j], core_pool[k]]
                 if dan1 not in combo and not any(d in combo for d in dan2):
                     continue
-                combo_score = score_combo(combo, metrics, features)
                 combos.append(
                     {
                         "numbers": combo,
-                        "score": combo_score,
+                        "score": score_combo(combo, metrics, features),
                         "sum": sum(combo),
                         "span": max(combo) - min(combo),
                     }
@@ -323,17 +341,19 @@ def analyze(records):
         "dan2": dan2,
         "dan3": dan3,
         "code5": code5,
-        "miss": miss,
         "hot": hot,
         "cold": cold,
         "high_miss": high_miss,
+        "miss": miss,
         "avg_sum": features["avg_sum"],
+        "avg_span": features["avg_span"],
         "sum_range": features["sum_range"],
         "road_ratio": features["road_ratio"],
         "weak_road": features["weak_road"],
         "prefer_even": features["prefer_even"],
-        "candidate_pool": candidate_pool,
-        "top_combos": combos[:8],
+        "candidate_pool": core_pool,
+        "type_count": features["type_count"],
+        "top_combos": combos[:10],
     }
 
 
@@ -364,6 +384,7 @@ def build_backtest(records):
         h3 += int(d3)
         h5 += int(c5)
         combo_hit += int(combo_ok)
+
         details.append(
             {
                 "period": target["expect"],
@@ -401,6 +422,8 @@ def build_backtest(records):
 def build_output(records, now):
     latest_item = records[0]
     latest_nums = parse_nums(latest_item)
+    latest_rec = analyze(records[1:31] if len(records) > 31 else records[1:])
+    display_combos = select_display_combos(latest_rec["top_combos"], 3)
 
     history = []
     for item in records[:10]:
@@ -416,22 +439,24 @@ def build_output(records, now):
             }
         )
 
-    today_rec = analyze(records[1:31] if len(records) > 31 else records[1:])
-    parity_tip = "近期奇码偏多，建议搭配偶码。" if today_rec["prefer_even"] else "近期偶码偏多，建议搭配奇码。"
-    weak_road_digits = today_rec["candidate_pool"]
-    display_combos = select_display_combos(today_rec["top_combos"], 3)
+    parity_tip = "近期奇数偏多，推荐组合偏向偶数搭配。" if latest_rec["prefer_even"] else "近期偶数偏多，推荐组合偏向奇数搭配。"
+    group3_count = latest_rec["type_count"].get("组三", 0)
+    leopard_count = latest_rec["type_count"].get("豹子", 0)
+    form_tip = "近期组三偏热，可保留一组带重号的组合。" if group3_count >= 3 else "近期组六占优，主推分散型组合。"
+    if leopard_count >= 2:
+        form_tip = "近期重复号偏多，建议保留一组双重号组合。"
 
     analysis_text = (
-        f"近30期热码为 {today_rec['hot'][:4]}，冷码为 {today_rec['cold'][:3]}。"
-        f"高遗漏号码为 {today_rec['high_miss'][:3] if today_rec['high_miss'] else '暂无'}。"
-        f"近10期和值均值 {today_rec['avg_sum']}，建议关注{today_rec['sum_range']}。"
-        f"012路分布：0路{today_rec['road_ratio']['0路']}%，1路{today_rec['road_ratio']['1路']}%，"
-        f"2路{today_rec['road_ratio']['2路']}%，{today_rec['weak_road']}路偏少。"
-        f"候选号码以热号为主，结合弱势路与遗漏做轻微修正，收敛到 {weak_road_digits[:5]}。"
-        f"{parity_tip}"
+        f"近30期热码为 {latest_rec['hot'][:4]}，冷码为 {latest_rec['cold'][:3]}。"
+        f"高遗漏号码为 {latest_rec['high_miss'][:3] if latest_rec['high_miss'] else '暂无'}。"
+        f"近10期和值均值 {latest_rec['avg_sum']}，当前建议关注{latest_rec['sum_range']}。"
+        f"012路分布为 0路{latest_rec['road_ratio']['0路']}%、1路{latest_rec['road_ratio']['1路']}%、2路{latest_rec['road_ratio']['2路']}%，"
+        f"{latest_rec['weak_road']}路略弱。"
+        f"本期候选号码收敛到 {latest_rec['candidate_pool'][:6]}，优先保留热号，再用弱势路和遗漏做轻微修正。"
+        f"{form_tip}{parity_tip}"
     )
 
-    output = {
+    return {
         "period": latest_item["expect"],
         "date": latest_item["opentime"] or now.strftime("%Y-%m-%d"),
         "update_time": now.strftime("%Y-%m-%d %H:%M"),
@@ -444,20 +469,20 @@ def build_output(records, now):
         },
         "history": history,
         "analysis": {
-            "hot": today_rec["hot"][:5],
-            "cold": today_rec["cold"][:4],
-            "miss": {str(k): v for k, v in today_rec["miss"].items()},
-            "high_miss": today_rec["high_miss"][:5],
-            "avg_sum": today_rec["avg_sum"],
-            "sum_range": today_rec["sum_range"],
-            "road_ratio": today_rec["road_ratio"],
+            "hot": latest_rec["hot"][:5],
+            "cold": latest_rec["cold"][:4],
+            "miss": {str(k): v for k, v in latest_rec["miss"].items()},
+            "high_miss": latest_rec["high_miss"][:5],
+            "avg_sum": latest_rec["avg_sum"],
+            "sum_range": latest_rec["sum_range"],
+            "road_ratio": latest_rec["road_ratio"],
             "text": analysis_text,
         },
         "recommendations": {
-            "dan1": today_rec["dan1"],
-            "dan2": today_rec["dan2"],
-            "dan3": today_rec["dan3"],
-            "code5": today_rec["code5"],
+            "dan1": latest_rec["dan1"],
+            "dan2": latest_rec["dan2"],
+            "dan3": latest_rec["dan3"],
+            "code5": latest_rec["code5"],
             "combos": [
                 {"label": f"重点{i + 1}", "numbers": item["numbers"]}
                 for i, item in enumerate(display_combos)
@@ -465,7 +490,6 @@ def build_output(records, now):
         },
         "backtest": build_backtest(records),
     }
-    return output
 
 
 def main():
