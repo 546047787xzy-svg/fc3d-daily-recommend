@@ -1,7 +1,7 @@
 {
   "period": "2026161",
   "date": "2026-06-20",
-  "update_time": "2026-06-21 02:58",
+  "update_time": "2026-06-21 18:46",
   "update_failed": false,
   "latest": {
     "numbers": [
@@ -145,8 +145,8 @@
     ],
     "cold": [
       5,
-      1,
       4,
+      1,
       0
     ],
     "miss": {
@@ -173,7 +173,7 @@
       "1路": 30,
       "2路": 30
     },
-    "text": "近30期热码为 [7, 2, 8, 6]，冷码为 [5, 1, 4]。高遗漏号码为 [0, 4, 6]。近10期和值均值 13.5，建议关注中和值（10-18）。012路分布：0路40%，1路30%，2路30%，1路偏少。候选号码以热号为主，结合弱势路与遗漏做轻微修正，收敛到 [1, 2, 3, 6, 7]。近期奇码偏多，建议搭配偶码。"
+    "text": "近30期热码为 [7, 2, 8, 6]，冷码为 [5, 4, 1]。高遗漏号码为 [0, 4, 6]。近10期和值均值 13.5，当前建议关注中和值（10-18）。012路分布为 0路40%、1路30%、2路30%，1路略弱。本期候选号码收敛到 [0, 1, 2, 3, 6, 7]，优先保留热号，再用弱势路和遗漏做轻微修正。近期组三偏热，可保留一组带重号的组合。近期奇数偏多，推荐组合偏向偶数搭配。"
   },
   "recommendations": {
     "dan1": 7,
@@ -207,15 +207,15 @@
         "numbers": [
           7,
           7,
-          8
+          7
         ]
       },
       {
         "label": "重点3",
         "numbers": [
-          6,
           7,
-          7
+          7,
+          8
         ]
       }
     ]
@@ -224,18 +224,18 @@
     "summary": {
       "total": 20,
       "dan1": {
-        "hit": 5,
-        "rate": 25.0,
+        "hit": 6,
+        "rate": 30.0,
         "random_rate": 30.0
       },
       "dan2": {
-        "hit": 14,
-        "rate": 70.0,
+        "hit": 13,
+        "rate": 65.0,
         "random_rate": 51.2
       },
       "dan3": {
-        "hit": 18,
-        "rate": 90.0,
+        "hit": 17,
+        "rate": 85.0,
         "random_rate": 65.7
       },
       "code5": {
@@ -348,7 +348,7 @@
           8
         ],
         "top_combo": [
-          2,
+          7,
           7,
           7
         ],
@@ -485,8 +485,8 @@
           7
         ],
         "code5": [
+          0,
           2,
-          4,
           6,
           7,
           8
@@ -548,8 +548,8 @@
         ],
         "dan1": 6,
         "dan2": [
-          6,
-          7
+          2,
+          6
         ],
         "dan3": [
           2,
@@ -569,7 +569,7 @@
           6
         ],
         "dan1_hit": false,
-        "dan2_hit": true,
+        "dan2_hit": false,
         "dan3_hit": true,
         "code5_hit": true,
         "combo_hit": false
@@ -624,9 +624,9 @@
           7
         ],
         "dan3": [
+          2,
           6,
-          7,
-          8
+          7
         ],
         "code5": [
           2,
@@ -692,13 +692,49 @@
         ],
         "dan1": 7,
         "dan2": [
-          7,
-          8
+          6,
+          7
         ],
         "dan3": [
           6,
           7,
           8
+        ],
+        "code5": [
+          2,
+          4,
+          6,
+          7,
+          8
+        ],
+        "top_combo": [
+          7,
+          7,
+          7
+        ],
+        "dan1_hit": false,
+        "dan2_hit": true,
+        "dan3_hit": true,
+        "code5_hit": false,
+        "combo_hit": false
+      },
+      {
+        "period": "2026148",
+        "date": "2026-06-07",
+        "actual": [
+          4,
+          0,
+          8
+        ],
+        "dan1": 7,
+        "dan2": [
+          6,
+          7
+        ],
+        "dan3": [
+          2,
+          6,
+          7
         ],
         "code5": [
           2,
@@ -714,43 +750,7 @@
         ],
         "dan1_hit": false,
         "dan2_hit": false,
-        "dan3_hit": true,
-        "code5_hit": false,
-        "combo_hit": false
-      },
-      {
-        "period": "2026148",
-        "date": "2026-06-07",
-        "actual": [
-          4,
-          0,
-          8
-        ],
-        "dan1": 7,
-        "dan2": [
-          7,
-          8
-        ],
-        "dan3": [
-          6,
-          7,
-          8
-        ],
-        "code5": [
-          2,
-          4,
-          6,
-          7,
-          8
-        ],
-        "top_combo": [
-          2,
-          7,
-          7
-        ],
-        "dan1_hit": false,
-        "dan2_hit": true,
-        "dan3_hit": true,
+        "dan3_hit": false,
         "code5_hit": false,
         "combo_hit": false
       },
@@ -818,7 +818,7 @@
         "top_combo": [
           7,
           7,
-          8
+          7
         ],
         "dan1_hit": false,
         "dan2_hit": false,
@@ -845,21 +845,21 @@
           8
         ],
         "code5": [
-          0,
           2,
           6,
           7,
-          8
+          8,
+          9
         ],
         "top_combo": [
-          7,
+          8,
           8,
           8
         ],
         "dan1_hit": false,
         "dan2_hit": true,
         "dan3_hit": true,
-        "code5_hit": false,
+        "code5_hit": true,
         "combo_hit": false
       },
       {
@@ -882,10 +882,10 @@
         ],
         "code5": [
           0,
-          2,
           6,
           7,
-          8
+          8,
+          9
         ],
         "top_combo": [
           8,
@@ -895,7 +895,7 @@
         "dan1_hit": false,
         "dan2_hit": true,
         "dan3_hit": true,
-        "code5_hit": true,
+        "code5_hit": false,
         "combo_hit": false
       },
       {
@@ -918,13 +918,13 @@
         ],
         "code5": [
           0,
-          4,
           6,
           7,
-          8
+          8,
+          9
         ],
         "top_combo": [
-          0,
+          8,
           8,
           8
         ],
@@ -942,14 +942,14 @@
           9,
           4
         ],
-        "dan1": 0,
+        "dan1": 8,
         "dan2": [
           0,
           8
         ],
         "dan3": [
           0,
-          6,
+          7,
           8
         ],
         "code5": [
@@ -964,7 +964,7 @@
           8,
           8
         ],
-        "dan1_hit": false,
+        "dan1_hit": true,
         "dan2_hit": true,
         "dan3_hit": true,
         "code5_hit": false,
